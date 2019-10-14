@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<HTML LANG="EN">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="style.css" rel="stylesheet" title="Default">
+    <title>Outlining tool - UP847948</title>
+  </head>
+
+  <body>
+    <div class="header" id="stickyHeader">
+      <ul class="textButton">
+        <li> <button aria-label="Bold" id="boldButton" title="Bold"><b>B</b></li>
+        <li> <button aria-label="Italic" id="italicButton" title="Italic"><i>I</i></li>
+        <li> <button aria-label="Underlined" id="underlineButton" title="Underline"><u>U</u></li>
+        <li> <button aria-label="Unordered List" id="UListButton" title="Unordered List">&bull;</li>
+        <li> <button aria-label="Ordered List" id="OListButton" title="Ordered List">(i)</li>
+        <li> <button aria-label="Outline" id="outlineButton" title="outline tool">+</li>
+        <input type="color" aria-lavel="fontColor" id="fontColorButton" title="Font Color">
+      </ul>
+    </div>
+
+    <div class="content">
+      <div id="textBody" class="page" contenteditable="true">
+        <!-- to make new level: add a open li element, followed by a ul of closed li elements containing the text. close li after all text and ul. -->
+      </div>
+    </div>
+
+    <footer id="foot">
+      <h3>All HTML and CSS files used can be validated <a href="https://Validator.w3.org/check?uri=referer" target="_blank" aria-label="Validation link">here</a></h3>
+    </footer>
+  </body>
+
+  <script>
+    addListeners();
+
+    function createNewOutline() {
+      let code = '<ul class="tree" tabindex="0"><li><a>edit me</a><ul><li><a>edit me</a></li><li><a>edit me</a></li></ul></li></ul>';
+      document.execCommand('insertHTML', false, code);
+      addListeners();
+    }
+
+    function checkEnter(e){
+      var code = (e.keyCode ? e.keyCode : e.which);
+      if(code == 13) { //Enter keycode
+        e.preventDefault();
+        createNewOutline();
+      }
+    }
+
+    function addListeners(){
+      var tree = document.querySelectorAll('ul.tree a:not(:last-child)'); //gets all uls under tree
+      for (var i = 0; i < tree.length; i++) {
+        tree[i].addEventListener('click', expand); //adds event listener for every ul under tree
+      }
+    }
+
+    function expand(e) {
+      var parent = e.target.parentElement;
+      var classList = parent.classList;
+      if (classList.contains("open")) {
+        classList.remove('open');
+        var opensubs = parent.querySelectorAll(':scope .open');
+        for (var i = 0; i < opensubs.length; i++) {
+          opensubs[i].classList.remove('open');
+        }
+      } else {
+        classList.add('open');
+      }
+      e.preventDefault();
+    }
+
+    window.onscroll = function() {
+      stick()
+    };
+
+    var header = document.getElementById("stickyHeader");
+    var sticky = header.offsetTop;
+
+    function stick() {
+      if (window.pageYOffset > sticky) {
+        header.classList.add("sticky");
+      } else {
+        header.classList.remove("sticky");
+      }
+    }
+
+    window.boldButton.addEventListener("click", function() {
+      document.execCommand('bold', false, null);
+    });
+    window.italicButton.addEventListener("click", function() {
+      document.execCommand('italic', false, null);
+    });
+    window.underlineButton.addEventListener("click", function() {
+      document.execCommand('underline', false, null);
+    });
+    window.UListButton.addEventListener("click", function() {
+      document.execCommand('insertUnorderedList', false, "newUList" + Math.round(Math.random() * 1000));
+    });
+    window.OListButton.addEventListener("click", function() {
+      document.execCommand('insertOrderedList', false, "newOList" + Math.round(Math.random() * 1000));
+    });
+    window.fontColorButton.addEventListener("change", function(e) {
+      document.execCommand('ForeColor', false, e.target.value);
+    })
+
+    window.outlineButton.addEventListener("click", createNewOutline);
+
+    window.textBody.addEventListener('keydown', checkEnter);
+
+    <!--Will need to use database or local storage to save-->
+  </script>
+
+</html>
