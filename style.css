@@ -14,6 +14,9 @@
 	text-align: center;
 }
 
+.new{
+	display: inline;
+}
 .textButton {
 	margin: 0;
   padding: 0;
@@ -115,6 +118,9 @@ p + p {
 	html, body {
 		background-color: #fff;
 	}
+	.header, footer{
+		display: none;
+	}
 	.page {
 		/* Reset all page styles that have been for better screen appearance only */
 		/* Break cascading by using the !important rule */
@@ -213,38 +219,52 @@ footer a:hover {
 }
 
 /* Remove default bullets */
-ul.tree li {
-    list-style-type: none;
-    position: relative;
+
+[contenteditable]:focus {
+    outline: 0px solid transparent;
 }
 
-ul.tree li ul {
-    display: none;
+[contentEditable=true]:empty:not(:focus):before{
+    content:attr(data-text)
 }
 
-ul.tree li.open > ul {
-    display: block;
+
+/* Remove default bullets */
+ul, .tree {
+  list-style-type: none;
 }
 
-ul.tree li a {
-    color: black;
-    text-decoration: none;
+/* Remove margins and padding from the parent ul */
+.tree {
+  margin: 0;
+  padding: 0;
 }
 
-ul.tree li a:before {
-    height: 1em;
-    padding:0 .1em;
-    font-size: .8em;
-    display: block;
-    position: absolute;
-    left: -1.3em;
-    top: .2em;
+/* Style the caret/arrow */
+.caret {
+  cursor: pointer;
+  user-select: none; /* Prevent text selection */
 }
 
-ul.tree li > a:not(:last-child):before {
-    content: '+';
+/* Create the caret/arrow with a unicode, and style it */
+.caret::before {
+  content: "+";
+  color: black;
+  display: inline-block;
+  margin-right: 6px;
 }
 
-ul.tree li.open > a:not(:last-child):before {
-    content: '-';
+/* Rotate the caret/arrow icon when clicked on (using JavaScript) */
+.caret-down::before {
+  content: "-";
+}
+
+/* Hide the nested list */
+.nested {
+  display: none;
+}
+
+/* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
+.active {
+  display: block;
 }
