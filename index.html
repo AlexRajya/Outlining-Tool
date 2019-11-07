@@ -49,11 +49,9 @@
 
   <script>
     let lastKey;//global variable to check if double enter is pressed
-    let test = [];
     let temp;
     setAtt();
     addListeners();
-    setNew();
 
     function setNew(){
       let newO = document.getElementsByClassName("new");
@@ -124,13 +122,14 @@
     function checkKey(e){
       var code = (e.keyCode ? e.keyCode : e.which);
       if (code == 13 && lastKey == 13){
-        document.execCommand('outdent');
-        e.preventDefault();
+        if(e.target.id !== "textBody"){
+          document.execCommand('outdent');
+          e.preventDefault();
+        }
         lastKey = undefined;
         //createNewOutline();
       }else if (code == 8 && lastKey == 8){
-        //e.preventDefault();
-        //document.execCommand('outdent'); //to take element out of list
+        //delete key
         lastKey = undefined;
       }else if (code == 9){
         e.preventDefault();
@@ -180,8 +179,6 @@
     });
 
     window.outlineButton.addEventListener("click", createNewTree);
-    //To do: 1. Make first input on text replace "edit me" 2. make enter on root make a new tree on newline 3. set up saving with server (node js)
-    //4. bg color change of full tree breaks it? (if caret class contenteditable = false it works, but element wont delete so add a check to delete)
   </script>
 
 </html>
