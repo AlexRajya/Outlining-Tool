@@ -1,25 +1,23 @@
-var fs = require('fs');
-var http = require('http');
-var url = require("url");
-var path = require("path");
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const fs = require('fs')
+var path = require('path');
 
-var server = http.createServer(function(request, response) {
-       var pathname = url.parse(request.url).pathname;
-       var ext = path.extname(pathname);
-           if(ext){
-               if(ext === '.css'){
-                   response.writeHead(200, {'Content-Type': 'text/css'});
-               }
-               else if(ext === '.js'){
-                   response.writeHead(200, {'Content-Type': 'text/javascript'});
-               }
-               response.write(fs.readFileSync(__dirname + pathname, 'utf8'));
-           }
-           else{
-                 response.writeHead(200, {'Content-Type': 'text/html'});
-                  response.write(fs.readFileSync('index.html', 'utf8'));
-           }
-           response.end();
-       })
+// viewed at http://localhost:8080
+app.use(express.static(__dirname));
+app.use(express.static("public"));
 
-server.listen(8080);
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+app.post('/', (req, res) => {
+  console.log(req.body);
+  fs.writeFileSync("code.txt",JSON.stringify(req.body)) 
+});
+
+const port = 8000;
+
+app.listen(port, () => {
+  console.log('Server running on port:' + port);
+});
