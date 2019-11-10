@@ -12,29 +12,33 @@
   <body>
     <div class="header" id="stickyHeader">
       <ul class="textButton">
-        <li> <button aria-label="Save" id="saveButton" title="Save">Save</li>
-        <li> <button aria-label="Bold" id="boldButton" title="Bold"><b>B</b></li>
-        <li> <button aria-label="Italic" id="italicButton" title="Italic"><i>I</i></li>
-        <li> <button aria-label="Underlined" id="underlineButton" title="Underline"><u>U</u></li>
-        <li> <button aria-label="Outline" id="outlineButton" title="outline tool">New branch</li>
-        <input type="color" aria-lavel="fontColor" id="fontColorButton" title="Font Color">
-        <input type="color" aria-lavel="BGColor" id="BGColorButton" title="BG Color">
-        <select id="fontChanger">
-          <option value"Times New Roman">Times New Roman</option>
-          <option value"Consolas">Consolas</option>
-          <option value"Tahoma">Tahoma</option>
-          <option value"Monospace">Monospace</option>
-          <option value"Cursive">Cursive</option>
-          <option value"Sans-Serif">Sans-Serif</option>
-          <option value"Calibri">Calibri</option>
-        </select>
-        <select id="fontSizeChanger">
-          <script>
-            for (let i = 1; i < 11; i++){
-              document.write("<option value='"+i+"'>"+i+"</option>");
-            }
-          </script>
-        </select>
+        <li><button aria-label="Save" id="saveButton" title="Save">Save</button></li>
+        <li><button aria-label="Bold" id="boldButton" title="Bold"><b>B</b></button></li>
+        <li><button aria-label="Italic" id="italicButton" title="Italic"><i>I</i></button></li>
+        <li><button aria-label="Underlined" id="underlineButton" title="Underline"><u>U</u></button></li>
+        <li><button aria-label="Outline" id="outlineButton" title="outline tool">New branch</button></li>
+        <li><input type="color" aria-label="fontColor" id="fontColorButton" title="Font Color"></li>
+        <li><input type="color" aria-label="BGColor" id="BGColorButton" title="BG Color"></li>
+        <li>
+          <select id="fontChanger">
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Consolas">Consolas</option>
+            <option value="Tahoma">Tahoma</option>
+            <option value="Monospace">Monospace</option>
+            <option value="Cursive">Cursive</option>
+            <option value="Sans-Serif">Sans-Serif</option>
+            <option value="Calibri">Calibri</option>
+          </select>
+        </li>
+        <li>
+          <select id="fontSizeChanger">
+            <script>
+              for (let i = 1; i < 11; i++){
+                document.write("<option value='"+i+"'>"+i+"</option>");
+              }
+            </script>
+          </select>
+        </li>
       </ul>
     </div>
 
@@ -47,7 +51,6 @@
     <footer id="foot">
       <h3>All HTML and CSS files used can be validated <a href="https://Validator.w3.org/check?uri=referer" target="_blank" aria-label="Validation link">here</a></h3>
     </footer>
-  </body>
 
   <script>
     async function pageLoaded() {
@@ -203,5 +206,5 @@
 
     window.outlineButton.addEventListener("click", createNewTree);
   </script>
-
+  </body>
 </html>

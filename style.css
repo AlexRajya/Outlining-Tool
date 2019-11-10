@@ -24,18 +24,17 @@
 	align-items: center;
 	text-decoration: none;
 	color: White;
-	cursor: pointer;
 	list-style-type: none;
 }
 
 .textButton li{
 	font-size: 90%;
 	box-shadow: 0 4px 5px rgba(75, 75, 75, 0.2);
-	border: 1px solid White;
 	outline-color: White;
 	align-self: center;
-	display: inline-block;
+	display: inline;
 	text-align: center;
+	cursor: pointer;
 }
 
 .textButton input[type="color"]{
@@ -46,7 +45,7 @@
 
 .textButton li:hover {
 	transition: all 0.3s linear 0s;
-	background-color: Blue;
+	background-color: White;
 }
 
 .content {
@@ -223,11 +222,6 @@ footer a:hover {
 [contenteditable]:focus {
     outline: 0px solid transparent;
 }
-
-[contentEditable=true]:empty:not(:focus):before{
-    content:attr(data-text)
-}
-
 
 /* Remove default bullets */
 ul, .tree {
