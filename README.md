@@ -2,4 +2,4 @@
 Application engineering coursework
 
 # Running Application
-To run clone repo then "node server.js"
+To run clone repo, change directory to CW then "npm install" and finally "npm start". 
