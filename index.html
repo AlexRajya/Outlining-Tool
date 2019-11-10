@@ -5,12 +5,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="style.css" rel="stylesheet" title="Default">
+    <link rel="shortcut icon" href="#" />
     <title>Outlining tool - UP847948</title>
   </head>
 
   <body>
     <div class="header" id="stickyHeader">
       <ul class="textButton">
+        <li> <button aria-label="Save" id="saveButton" title="Save">Save</li>
         <li> <button aria-label="Bold" id="boldButton" title="Bold"><b>B</b></li>
         <li> <button aria-label="Italic" id="italicButton" title="Italic"><i>I</i></li>
         <li> <button aria-label="Underlined" id="underlineButton" title="Underline"><u>U</u></li>
@@ -48,6 +50,27 @@
   </body>
 
   <script>
+    async function pageLoaded() {
+      const response = await fetch('message.txt');
+      const text = await response.text();
+      var obj = JSON.parse(text);
+      const dt = document.getElementById("textBody");
+      dt.innerHTML = obj.innerHTML;
+      setAtt();
+      addListeners();
+    }
+
+    window.addEventListener("load", pageLoaded);
+
+    window.saveButton.addEventListener("click", save);
+    function save(){
+      mytext = document.getElementById("textBody").innerHTML;
+      var myObj = {innerHTML:"yyy"};
+      myObj.innerHTML = mytext;
+      myJSON = JSON.stringify(myObj);
+      console.log(myJSON);
+    }
+
     let lastKey;//global variable to check if double enter is pressed
     let temp;
     setAtt();
