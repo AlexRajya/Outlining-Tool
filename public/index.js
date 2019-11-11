@@ -70,8 +70,9 @@ function save(){
   myObj.innerHTML = mytext;
   myJSON = JSON.stringify(myObj);
 
+  let url = window.location.href;
   var xhr = new XMLHttpRequest();
-  xhr.open("POST", "http://localhost:8000", true);
+  xhr.open("POST", url, true);
   xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
   xhr.send(myJSON);
 }
