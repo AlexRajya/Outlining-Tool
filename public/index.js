@@ -1,9 +1,61 @@
+//Outlining tool JS code
+let lastKey;//global variable to check if double enter is pressed
+let temp;
+init();
+
+function init(){
+  //Sticky Header JS code
+  window.onscroll = function() {
+    stick()
+  };
+
+  let header = document.getElementById("stickyHeader");
+  let sticky = header.offsetTop;
+
+  function stick() {
+    if (window.pageYOffset > sticky) {
+      header.classList.add("sticky");
+    } else {
+      header.classList.remove("sticky");
+    }
+  }
+  //Base event listeners
+  document.getElementById("textBody").addEventListener("keydown",checkKey);
+
+  window.boldButton.addEventListener("click", function() {
+    document.execCommand('bold', false, null);
+  });
+  window.italicButton.addEventListener("click", function() {
+    document.execCommand('italic', false, null);
+  });
+  window.underlineButton.addEventListener("click", function() {
+    document.execCommand('underline', false, null);
+  });
+  window.fontColorButton.addEventListener("change", function(e) {
+    document.execCommand('ForeColor', false, e.target.value);
+  });
+  window.BGColorButton.addEventListener("change", function(e) {
+    document.execCommand('BackColor', false, e.target.value);
+  });
+  window.fontChanger.addEventListener("change", function(e) {
+    document.execCommand('FontName', false, e.target.value);
+  });
+  window.fontSizeChanger.addEventListener("change", function(e) {
+    document.execCommand('FontSize', false, e.target.value);
+  });
+  window.outlineButton.addEventListener("click", createNewTree);
+
+  window.addEventListener("load", pageLoaded);
+
+  window.addEventListener("unload", save);
+}
+
 async function pageLoaded() {
   const response = await fetch('code.txt');
   const text = await response.text();
-  var obj = JSON.parse(text);
-  const dt = document.getElementById("textBody");
-  dt.innerHTML = obj.innerHTML;
+  let obj = JSON.parse(text);
+  const tb = document.getElementById("textBody");
+  tb.innerHTML = obj.innerHTML;
   setAtt();
   addListeners();
 }
@@ -24,11 +76,7 @@ function save(){
   xhr.send(myJSON);
 }
 
-let lastKey;//global variable to check if double enter is pressed
-let temp;
-setAtt();
-addListeners();
-
+//Not yet used - To be used to replace "edit me" text with JS
 function setNew(){
   let newO = document.getElementsByClassName("new");
   for (let i = 0; i < newO.length; i++){
@@ -79,7 +127,7 @@ function addListeners(){
   }
 }
 
-function createNewOutline() { //double enter press
+function appendNewOutline() { //appends new tree to text body (not yet used)
   let code = '<ul class="tree"><li><span class="caret"></span><span>Edit me</span><ul class="nested"><div>Edit me</div></ul></li></ul>';
   document.getElementById("textBody").insertAdjacentHTML('beforeend', code);
   setAtt();
@@ -95,7 +143,7 @@ function createNewTree() { //Button press
   lastKey = undefined;
 }
 
-function checkKey(e){
+function checkKey(e){//function to add functionality to key presses
   var code = (e.keyCode ? e.keyCode : e.which);
   if (code == 13 && lastKey == 13){
     if(e.target.id !== "textBody"){
@@ -114,47 +162,3 @@ function checkKey(e){
     lastKey = code;
   }
 }
-
-window.onscroll = function() {
-  stick()
-};
-
-var header = document.getElementById("stickyHeader");
-var sticky = header.offsetTop;
-
-function stick() {
-  if (window.pageYOffset > sticky) {
-    header.classList.add("sticky");
-  } else {
-    header.classList.remove("sticky");
-  }
-}
-
-document.getElementById("textBody").addEventListener("keydown",checkKey);
-
-window.boldButton.addEventListener("click", function() {
-  document.execCommand('bold', false, null);
-});
-window.italicButton.addEventListener("click", function() {
-  document.execCommand('italic', false, null);
-});
-window.underlineButton.addEventListener("click", function() {
-  document.execCommand('underline', false, null);
-});
-window.fontColorButton.addEventListener("change", function(e) {
-  document.execCommand('ForeColor', false, e.target.value);
-});
-window.BGColorButton.addEventListener("change", function(e) {
-  document.execCommand('BackColor', false, e.target.value);
-});
-window.fontChanger.addEventListener("change", function(e) {
-  document.execCommand('FontName', false, e.target.value);
-});
-window.fontSizeChanger.addEventListener("change", function(e) {
-  document.execCommand('FontSize', false, e.target.value);
-});
-window.outlineButton.addEventListener("click", createNewTree);
-
-window.addEventListener("load", pageLoaded);
-
-window.addEventListener("unload", save);
