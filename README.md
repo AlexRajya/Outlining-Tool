@@ -1,5 +1,9 @@
 # Outlining-Tool
-Application engineering coursework
+Application engineering coursework by UP847948
 
 # Running Application
-To run clone repo, change directory then "npm install" and finally "npm start". 
+To run:
+1.clone repo 
+2.change into relevant directory 
+3."npm install" 
+4."npm start" 
