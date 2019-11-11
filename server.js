@@ -12,8 +12,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.post('/', (req, res) => {
-  console.log(req.body);
-  fs.writeFileSync("code.txt",JSON.stringify(req.body)) 
+  console.log("saved successfully");
+  fs.writeFileSync("code.txt",JSON.stringify(req.body))
 });
 
 const port = 8000;
