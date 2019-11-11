@@ -47,7 +47,7 @@ function init(){
 
   window.addEventListener("load", pageLoaded);
 
-  window.addEventListener("unload", save);
+  window.addEventListener("beforeunload", save);
 }
 
 async function pageLoaded() {
