@@ -44,6 +44,21 @@ function init(){
     document.execCommand('FontSize', false, e.target.value);
   });
   window.outlineButton.addEventListener("click", createNewTree);
+  window.centerButton.addEventListener("click", function() {
+    document.execCommand('justifyCenter', false, null);
+  });
+  window.leftButton.addEventListener("click", function() {
+    document.execCommand('justifyLeft', false, null);
+  });
+  window.rightButton.addEventListener("click", function() {
+    document.execCommand('justifyRight', false, null);
+  });
+  window.clearButton.addEventListener("click", function() {
+    if(window.confirm("really delete?")){
+      console.log("doc cleared");
+      document.getElementById("textBody").innerHTML = "";
+    }
+  });
 
   window.addEventListener("load", pageLoaded);
 

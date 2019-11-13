@@ -1,56 +1,78 @@
-* {
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-}
-
 *, *:before, *:after {
   box-sizing: border-box;
 }
 
 .header {
-  padding: 10px 16px;
   background: #000;
-  color: White;
-	text-align: center;
+	overflow: hidden
 }
 
 .new{
 	display: inline;
 }
 
-.textButton {
-	margin: 0;
-  padding: 0;
-  overflow: hidden;
-	align-items: center;
-	text-decoration: none;
-	color: White;
-	list-style-type: none;
+.fill:hover,
+.fill:focus {
+	color: Black;
+  box-shadow: inset 0 0 0 2em White;
 }
 
-.textButton li{
-	font-size: 90%;
-	box-shadow: 0 4px 5px rgba(75, 75, 75, 0.2);
-	outline-color: White;
-	align-self: center;
-	display: inline;
-	text-align: center;
+button {
+  color: White;
+  transition: 0.8s;
+}
+
+select{
 	cursor: pointer;
-}
-
-.textButton input[type="color"]{
-	background-color: transparent;
+	margin: 0.5em;
+	height: 2em;
 	border: none;
-	outline: none;
 }
 
-.textButton li:hover {
-	transition: all 0.3s linear 0s;
-	background-color: White;
+input {
+	cursor: pointer;
+	background: none;
+	color: White;
+	margin: 0.5em;
+	height: 2em;
+}
+
+button {
+	cursor: pointer;
+	height: 2.5em;
+  background: none;
+  border: none;
+  font: inherit;
+  margin: 0.5em;
+
+}
+
+.buttonList {
+	padding-left: 1em;
+	float: left;
+	list-style-type: none;
+	margin: 0.5em;
+	justify-content: center;
+  align-content: center;
+  align-items: center;
+  text-align: center;
+	display: inline-flex;
+}
+
+.rightList{
+	padding-right: 1em;
+	float: right;
+	list-style-type: none;
+	margin: 0.5em;
+	justify-content: center;
+  align-content: center;
+  align-items: center;
+  text-align: center;
+	display: inline-flex;
 }
 
 .content {
-  padding: 16px;
+  padding: 8px;
 }
 
 .sticky {
@@ -60,7 +82,7 @@
 }
 
 .sticky + .content {
-  padding-top: 60px;
+  padding-top: 70px;
 }
 
 html, body {
@@ -215,8 +237,6 @@ footer a:hover {
 	  clear: both;
 	}
 }
-
-/* Remove default bullets */
 
 [contenteditable]:focus {
     outline: 0px solid transparent;

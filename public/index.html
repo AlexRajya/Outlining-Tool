@@ -11,17 +11,18 @@
 
   <body>
     <div class="header" id="stickyHeader">
-      <ul class="textButton">
-        <li><button aria-label="Bold" id="boldButton" title="Bold"><b>B</b></button></li>
-        <li><button aria-label="Italic" id="italicButton" title="Italic"><i>I</i></button></li>
-        <li><button aria-label="Underlined" id="underlineButton" title="Underline"><u>U</u></button></li>
-        <li><button aria-label="Outline" id="outlineButton" title="outline tool">New branch</button></li>
-        <li><input type="color" aria-label="fontColor" id="fontColorButton" title="Font Color"></li>
-        <li><input type="color" aria-label="BGColor" id="BGColorButton" title="BG Color"></li>
+      <ul class="buttonList">
+        <li><button aria-label="Bold" id="boldButton" title="Bold" class="fill"><b>B</b></button></li>
+        <li><button aria-label="Italic" id="italicButton" title="Italic" class="fill"><i>I</i></button></li>
+        <li><button aria-label="Underlined" id="underlineButton" title="Underline" class="fill"><u>U</u></button></li>
+        <li><button aria-label="Outline" id="outlineButton" title="outline tool" class="fill">New branch</button></li>
+        <li><input type="color" aria-label="fontColor" id="fontColorButton" title="Font Color" class="fill"></li>
+        <li><input type="color" aria-label="BGColor" id="BGColorButton" title="BG Color" class="fill"></li>
         <li>
           <select id="fontChanger">
             <option value="Times New Roman">Times New Roman</option>
             <option value="Consolas">Consolas</option>
+            <option value="Comic Sans">Comic Sans</option>
             <option value="Tahoma">Tahoma</option>
             <option value="Monospace">Monospace</option>
             <option value="Cursive">Cursive</option>
@@ -32,12 +33,19 @@
         <li>
           <select id="fontSizeChanger">
             <script>
-              for (let i = 1; i < 11; i++){
+              for (let i = 1; i < 8; i++){
                 document.write("<option value='"+i+"'>"+i+"</option>");
               }
             </script>
-          </select>
+          </select>    
+          <li><button aria-label="left" id="leftButton" title="Left" class="fill">Left</button></li>
+          <li><button aria-label="center" id="centerButton" title="Center" class="fill">Center</button></li>
+          <li><button aria-label="right" id="rightButton" title="Right" class="fill">Right</button></li>
         </li>
+      </ul>
+      <ul class="rightList">
+        <li><button aria-label="Clear doc" id="clearButton" title="Clear" class="fill">Clear</button></li>
+        <li><button aria-label="Help button" id="helpButton" title="help" class="fill">?</button></li>
       </ul>
     </div>
 
