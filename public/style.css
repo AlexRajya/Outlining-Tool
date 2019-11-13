@@ -7,10 +7,6 @@
 	overflow: hidden
 }
 
-.new{
-	display: inline;
-}
-
 .fill:hover,
 .fill:focus {
 	color: Black;
@@ -240,8 +236,16 @@ footer a:hover {
 
 [contenteditable]:focus {
     outline: 0px solid transparent;
+		border: none;
 }
 
+::selection {
+  background: #a8d1ff;
+}
+
+.new:focus{
+	background: #a8d1ff;
+}
 /* Remove default bullets */
 ul, .tree {
   list-style-type: none;

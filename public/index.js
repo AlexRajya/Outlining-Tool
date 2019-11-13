@@ -80,16 +80,16 @@ function save(){
   for (let i = 0; i < toggler.length; i++){
     toggler[i].setAttribute("listen","false");
   }
-  mytext = document.getElementById("textBody").innerHTML;
-  var myObj = {innerHTML:"yyy"};
-  myObj.innerHTML = mytext;
-  myJSON = JSON.stringify(myObj);
+  saveData = document.getElementById("textBody").innerHTML;
+  var sendObj = {innerHTML:"yyy"};
+  sendObj.innerHTML = saveData;
+  sendJSON = JSON.stringify(sendObj);
 
   let url = window.location.href;
   var xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
   xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-  xhr.send(myJSON);
+  xhr.send(sendJSON);
 }
 
 //Not yet used - To be used to replace "edit me" text with JS
@@ -98,16 +98,31 @@ function setNew(){
   for (let i = 0; i < newO.length; i++){
     newO[i].addEventListener("click",function(e){
       if(this.classList.contains("new")){
-        //this.focus();
+        this.focus();
       }
     });
     newO[i].addEventListener("keydown",function(e){
       if(this.classList.contains("new")){
-        //insert code to replace text
+        this.textContent = e.key;
+        setEndOfContenteditable(e.target);
+        e.preventDefault();
         this.classList.remove("new");
       }
     });
   }
+}
+
+function setEndOfContenteditable(contentEditableElement)
+{
+    let range,selection;
+    if(document.createRange){
+        range = document.createRange();
+        range.selectNodeContents(contentEditableElement);
+        range.collapse(false);
+        selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
 }
 
 function setAtt(){
@@ -151,7 +166,7 @@ function appendNewOutline() { //appends new tree to text body (not yet used)
 }
 
 function createNewTree() { //Button press
-  let code = '<ul class="tree"><li><span class="caret"></span><span class="new">Edit me</span><ul class="nested"><li><span>Edit me</span></li><li></li></ul></li></ul>';
+  let code = '<ul class="tree"><li><span class="caret"></span><span class="new" tabindex="0">Edit me</span><ul class="nested"><li><span class="new" tabindex="0">Edit me</span></li><li></li></ul></li></ul>';
   document.execCommand('insertHTML', false, code);
   setAtt();
   addListeners();
@@ -163,7 +178,7 @@ function checkKey(e){//function to add functionality to key presses
   var code = (e.keyCode ? e.keyCode : e.which);
   if (code == 13 && lastKey == 13){
     if(e.target.id !== "textBody"){
-      document.execCommand('outdent');
+      document.execCommand("outdent");
       e.preventDefault();
     }
     lastKey = undefined;
