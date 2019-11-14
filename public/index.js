@@ -180,4 +180,12 @@ function checkKey(e){//function to add functionality to key presses
   }else{
     lastKey = code;
   }
+
+  let keyPressed = e.keyCode;
+  let ctrlPressed = e.ctrlKey;
+  if (ctrlPressed && keyPressed == 40) {
+    console.log("ctrl pressed");
+    createNewTree();
+    e.preventDefault();
+  }
 }
