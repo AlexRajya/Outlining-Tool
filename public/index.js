@@ -54,8 +54,8 @@ function init(){
     document.execCommand('justifyRight', false, null);
   });
   window.clearButton.addEventListener("click", function() {
-    if(window.confirm("really delete?")){
-      console.log("doc cleared");
+    if(window.confirm("Are you sure you want to clear the page?")){
+      console.log("document cleared");
       document.getElementById("textBody").innerHTML = "";
     }
   });
@@ -112,8 +112,7 @@ function setNew(){
   }
 }
 
-function setEndOfContenteditable(contentEditableElement)
-{
+function setEndOfContenteditable(contentEditableElement){
     let range,selection;
     if(document.createRange){
         range = document.createRange();
@@ -157,14 +156,7 @@ function addListeners(){
     }
   }
 }
-
-function appendNewOutline() { //appends new tree to text body (not yet used)
-  let code = '<ul class="tree"><li><span class="caret"></span><span>Edit me</span><ul class="nested"><div>Edit me</div></ul></li></ul>';
-  document.getElementById("textBody").insertAdjacentHTML('beforeend', code);
-  setAtt();
-  addListeners();
-}
-
+//document.getElementById("textBody").insertAdjacentHTML('beforeend', code); to append a new tree
 function createNewTree() { //Button press
   let code = '<ul class="tree"><li><span class="caret"></span><span class="new" tabindex="0">Edit me</span><ul class="nested"><li><span class="new" tabindex="0">Edit me</span></li><li></li></ul></li></ul>';
   document.execCommand('insertHTML', false, code);
@@ -175,17 +167,13 @@ function createNewTree() { //Button press
 }
 
 function checkKey(e){//function to add functionality to key presses
-  var code = (e.keyCode ? e.keyCode : e.which);
+  let code = (e.keyCode ? e.keyCode : e.which);
   if (code == 13 && lastKey == 13){
-    if(e.target.id !== "textBody"){
-      document.execCommand("outdent");
-      e.preventDefault();
-    }
+    document.execCommand('outdent');
+    document.execCommand('insertHTML', false, "<div></div>");
+    e.preventDefault();
     lastKey = undefined;
     //createNewOutline();
-  }else if (code == 8 && lastKey == 8){
-    //delete key
-    lastKey = undefined;
   }else if (code == 9){
     e.preventDefault();
     document.execCommand("indent");
