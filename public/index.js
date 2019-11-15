@@ -75,7 +75,7 @@ function init(){
   });
 
   window.addEventListener("load", pageLoaded);
-
+  window.addEventListener("pagehide", save);
   window.addEventListener("beforeunload", save);
 }
 
