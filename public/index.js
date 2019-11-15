@@ -5,6 +5,8 @@ init();
 
 function init(){
   //Sticky Header JS code
+  //setInterval(autosave,10000);
+
   window.onscroll = function() {
     stick()
   };
@@ -73,6 +75,7 @@ async function pageLoaded() {
   tb.innerHTML = obj.innerHTML;
   setAtt();
   addListeners();
+  setNew();
 }
 
 function save(){
@@ -92,8 +95,12 @@ function save(){
   xhr.send(sendJSON);
 }
 
-//Not yet used - To be used to replace "edit me" text with JS
-function setNew(){
+function autosave(){//Cursor needs to be noted then removed back to original spot
+  save();
+  pageLoaded();
+}
+
+function setNew(){ //used to instant replace "edit me" text
   let newO = document.getElementsByClassName("new");
   for (let i = 0; i < newO.length; i++){
     newO[i].addEventListener("click",function(e){
@@ -103,10 +110,12 @@ function setNew(){
     });
     newO[i].addEventListener("keydown",function(e){
       if(this.classList.contains("new")){
-        this.textContent = e.key;
-        setEndOfContenteditable(e.target);
-        e.preventDefault();
-        this.classList.remove("new");
+        if((e.key).length == 1){//Checks if alphanumeric or special key e.g. ctrl is pressed
+          this.textContent = e.key;
+          setEndOfContenteditable(e.target);
+          e.preventDefault();
+          this.classList.remove("new");
+        }
       }
     });
   }
