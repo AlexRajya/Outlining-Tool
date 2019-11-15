@@ -1,12 +1,12 @@
 //Outlining tool JS code
 let lastKey;//global variable to check if double enter is pressed
 let temp;
+
 init();
 
 function init(){
   //Sticky Header JS code
   //setInterval(autosave,10000);
-
   window.onscroll = function() {
     stick()
   };
@@ -19,6 +19,18 @@ function init(){
       header.classList.add("sticky");
     } else {
       header.classList.remove("sticky");
+    }
+  }
+  //Modal listeners
+  document.getElementById("helpButton").addEventListener("click", function() {
+    document.getElementById("Modal").style.display = "block";
+  });
+  document.getElementById("close").addEventListener("click", function() {
+    document.getElementById("Modal").style.display = "none";
+  });
+  window.onclick = function(event) {
+    if (event.target == document.getElementById("myModal")) {
+      document.getElementById("Modal").style.display = "none";
     }
   }
   //Base event listeners
