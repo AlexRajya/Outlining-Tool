@@ -28,8 +28,8 @@ function init(){
   document.getElementById("close").addEventListener("click", function() {
     document.getElementById("Modal").style.display = "none";
   });
-  window.onclick = function(event) {
-    if (event.target == document.getElementById("myModal")) {
+  window.onclick = function(e) {
+    if (e.target == document.getElementById("Modal")) {
       document.getElementById("Modal").style.display = "none";
     }
   }
