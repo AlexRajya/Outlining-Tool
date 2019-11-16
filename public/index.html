@@ -10,45 +10,46 @@
   </head>
 
   <body>
-    <div class="header" id="stickyHeader">
-      <ul class="buttonList">
-        <li><button aria-label="Bold" id="boldButton" title="Bold" class="fill"><b>B</b></button></li>
-        <li><button aria-label="Italic" id="italicButton" title="Italic" class="fill"><i>I</i></button></li>
-        <li><button aria-label="Underlined" id="underlineButton" title="Underline" class="fill"><u>U</u></button></li>
-        <li><button aria-label="Outline" id="outlineButton" title="outline tool" class="fill">New branch</button></li>
-        <li><input type="color" aria-label="fontColor" id="fontColorButton" title="Font Color" class="fill"></li>
-        <li><input type="color" aria-label="BGColor" id="BGColorButton" title="BG Color" class="fill"></li>
-        <li>
-          <select id="fontChanger">
-            <option value="Times New Roman">Times New Roman</option>
-            <option value="Consolas">Consolas</option>
-            <option value="Comic Sans">Comic Sans</option>
-            <option value="Tahoma">Tahoma</option>
-            <option value="Monospace">Monospace</option>
-            <option value="Cursive">Cursive</option>
-            <option value="Sans-Serif">Sans-Serif</option>
-            <option value="Calibri">Calibri</option>
-          </select>
-        </li>
-        <li>
-          <select id="fontSizeChanger">
-            <script>
-              for (let i = 1; i < 8; i++){
-                document.write("<option value='"+i+"'>"+i+"</option>");
-              }
-            </script>
-          </select>
-        </li>
-        <li><button aria-label="left" id="leftButton" title="Left" class="fill">Left</button></li>
-        <li><button aria-label="center" id="centerButton" title="Center" class="fill">Center</button></li>
-        <li><button aria-label="right" id="rightButton" title="Right" class="fill">Right</button></li>
-      </ul>
-      <ul class="rightList">
-        <li><button aria-label="Clear doc" id="clearButton" title="Clear" class="fill">Clear</button></li>
-        <li><button aria-label="Help button" id="helpButton" title="help" class="fill">?</button></li>
-      </ul>
+    <div class="nav-wrapper">
+      <div class="header" id="stickyHeader">
+        <ul class="buttonList">
+          <li><button aria-label="Bold" id="boldButton" title="Bold" class="fill"><b>B</b></button></li>
+          <li><button aria-label="Italic" id="italicButton" title="Italic" class="fill"><i>I</i></button></li>
+          <li><button aria-label="Underlined" id="underlineButton" title="Underline" class="fill"><u>U</u></button></li>
+          <li><button aria-label="Outline" id="outlineButton" title="outline tool" class="fill">New branch</button></li>
+          <li><input type="color" aria-label="fontColor" id="fontColorButton" title="Font Color" class="fill"></li>
+          <li><input type="color" aria-label="BGColor" id="BGColorButton" title="BG Color" class="fill"></li>
+          <li>
+            <select id="fontChanger">
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Consolas">Consolas</option>
+              <option value="Comic Sans">Comic Sans</option>
+              <option value="Tahoma">Tahoma</option>
+              <option value="Monospace">Monospace</option>
+              <option value="Cursive">Cursive</option>
+              <option value="Sans-Serif">Sans-Serif</option>
+              <option value="Calibri">Calibri</option>
+            </select>
+          </li>
+          <li>
+            <select id="fontSizeChanger">
+              <script>
+                for (let i = 1; i < 8; i++){
+                  document.write("<option value='"+i+"'>"+i+"</option>");
+                }
+              </script>
+            </select>
+          </li>
+          <li><button aria-label="left" id="leftButton" title="Left" class="fill">Left</button></li>
+          <li><button aria-label="center" id="centerButton" title="Center" class="fill">Center</button></li>
+          <li><button aria-label="right" id="rightButton" title="Right" class="fill">Right</button></li>
+        </ul>
+        <ul class="rightList">
+          <li><button aria-label="Clear doc" id="clearButton" title="Clear" class="fill">Clear</button></li>
+          <li><button aria-label="Help button" id="helpButton" title="help" class="fill">?</button></li>
+        </ul>
+      </div>
     </div>
-
     <div id="Modal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
@@ -56,7 +57,7 @@
           <h2>Help</h2>
         </div>
         <div class="modal-body">
-          <h3><p>Overview:</p></h3>
+          <h3>Overview:</h3>
           This is a text editor which has a built in outlining tool. Use either
           the <i>"new branch"</i> button or use <i>"CTRL + DOWNARROW"</i>
           to create a new outline. The document is automatically saved on closing

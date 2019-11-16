@@ -59,6 +59,10 @@
 	overflow: hidden
 }
 
+.nav-wrapper{
+  height: 4.5em;
+}
+
 .fill:hover,
 .fill:focus {
 	color: Black;
@@ -120,7 +124,7 @@ button {
 }
 
 .content {
-  padding: 8px;
+  padding: 1em;
 }
 
 .sticky {
