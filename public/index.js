@@ -33,6 +33,13 @@ function init(){
       document.getElementById("Modal").style.display = "none";
     }
   }
+  //text to speech button in help Modal
+  txt = document.getElementById("helpText").textContent;
+  let message = new SpeechSynthesisUtterance(txt);
+  function speak(){
+    speechSynthesis.speak(message);
+  }
+  document.getElementById("textToSpeech").addEventListener("click", speak);
   //Base event listeners
   document.getElementById("textBody").addEventListener("keydown",checkKey);
 

@@ -57,11 +57,13 @@
           <h2>Help</h2>
         </div>
         <div class="modal-body">
-          <h3>Overview:</h3>
-          This is a text editor which has a built in outlining tool. Use either
-          the <i>"new branch"</i> button or use <i>"CTRL + DOWNARROW"</i>
-          to create a new outline. The document is automatically saved on closing
-          of the page and every 10 seconds.
+          <h3>Overview:	<span><button id="textToSpeech">&#128266;</button></span></h3>
+          <div id="helpText">
+            This is a text editor which has a built in outlining tool. Use either
+            the <i>"new branch"</i> button or use <i>"CTRL + DOWNARROW"</i>
+            to create a new outline. The document is automatically saved on closing
+            of the page.
+          </div>
         </div>
         <div class="modal-footer">
           <p>Any bugs or issues please email <b>UP847948@myport.ac.uk</b></p>
@@ -71,7 +73,6 @@
 
     <div class="content">
       <div id="textBody" class="page" contenteditable="true">
-
         <!--Text editing/outlining area-->
       </div>
     </div>
