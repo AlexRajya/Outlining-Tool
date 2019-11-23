@@ -264,6 +264,9 @@ function insertAtCursor(ele){
 
 function checkKey(e){//function to add functionality to key presses
   let code = (e.keyCode ? e.keyCode : e.which);
+  let sel = window.getSelection();
+  let ele = sel.anchorNode;
+
   if (code == 13 && lastKey == 13){
     document.execCommand('outdent');
     e.preventDefault();
@@ -272,14 +275,18 @@ function checkKey(e){//function to add functionality to key presses
   }else if (code == 9){
     e.preventDefault();
     document.execCommand("indent");
-  }else if (code == 13 && lastKey !== 13){
-    //something
+  }else if (code == 8){
+    if (ele.textContent == ""){
+      e.preventDefault();
+      while (ele.tagName !== 'LI'){
+        ele = ele.parentElement;//when moving a subtree li is inside a new tree
+      }
+      ele.remove();
+    }
   }else{
     lastKey = code;
   }
 
-  let sel = window.getSelection();
-  let ele = sel.anchorNode;
   let keyPressed = e.keyCode;
   let ctrlPressed = e.ctrlKey;
   if (ctrlPressed) {
