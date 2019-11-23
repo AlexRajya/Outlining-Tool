@@ -64,7 +64,7 @@ function init(){
   window.fontSizeChanger.addEventListener("change", function(e) {
     document.execCommand('FontSize', false, e.target.value);
   });
-  window.outlineButton.addEventListener("click", createNewTree);
+  window.outlineButton.addEventListener("click", newOutline);
   window.centerButton.addEventListener("click", function() {
     document.execCommand('justifyCenter', false, null);
   });
@@ -92,7 +92,6 @@ async function pageLoaded() {
   let obj = JSON.parse(text);
   const tb = document.getElementById("textBody");
   tb.innerHTML = obj.innerHTML;
-  setAtt();
   addListeners();
   setNew();
 }
@@ -112,11 +111,6 @@ function save(){
   xhr.open("POST", url, true);
   xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
   xhr.send(sendJSON);
-}
-
-function autosave(){//Cursor needs to be noted then removed back to original spot
-  save();
-  pageLoaded();
 }
 
 function setNew(){ //used to instant replace "edit me" text
@@ -165,7 +159,7 @@ function addListeners(){
   let toggler = document.getElementsByClassName("caret");
   for (let i = 0; i < toggler.length; i++){
     if(toggler[i].getAttribute("listen") == "false"){
-      toggler[i].addEventListener("click", function toggle(){
+      toggler[i].addEventListener("click", function(){
         temp = this.parentElement;
         while(temp.querySelector(".nested") == null){
           temp = temp.parentElement;
@@ -184,36 +178,156 @@ function addListeners(){
     }
   }
 }
-//document.getElementById("textBody").insertAdjacentHTML('beforeend', code); to append a new tree
-function createNewTree() { //Button press
-  let code = '<ul class="tree"><li><span class="caret"></span><span class="new" tabindex="0">Edit me</span><ul class="nested"><li><span class="new" tabindex="0">Edit me</span></li><li></li></ul></li></ul>';
-  document.execCommand('insertHTML', false, code);
+
+function newOutline(){
+  //Create new tree and Li
+  const tree = document.createElement("ul");
+  tree.classList.add("tree");
+
+  const parentLi = document.createElement("li");
+  tree.appendChild(parentLi);
+  //Children of Li and nested list
+  const span1 = document.createElement("span");
+  span1.classList.add("caret");
+  const span2 = document.createElement("span");
+  span2.classList.add("new");
+  span2.tabIndex = "0";
+  span2.textContent = "Edit me";
+  const nestedUl = document.createElement("ul");
+  nestedUl.classList.add("nested");
+
+  parentLi.append(span1);
+  parentLi.append(span2);
+  parentLi.append(nestedUl);
+  //appending into nested Li
+  const nestedLi = document.createElement("li");
+  nestedUl.appendChild(nestedLi);
+  const span3 = document.createElement("div");
+  span3.classList.add("new");
+  span3.tabIndex = "0";
+  span3.textContent = "Edit me";
+  nestedLi.appendChild(span3);
+  //append at cursor
+  sel = window.getSelection();
+  element = sel.anchorNode;
+  if(element.classList == undefined){//Checks if inserting on text node
+    element = element.parentElement;
+  }
+  if(element.id == "textBody"){
+    insertAtCursor(tree);
+  }else{
+    let ele = element;
+    let pos;
+    let parentEle = ele;
+
+    while (ele.tagName !== 'LI'){
+      ele = ele.parentElement;//when moving a subtree li is inside a new tree
+    }
+    while (parentEle.tagName !== 'UL'){
+      parentEle = parentEle.parentElement;
+    }
+
+    for (let i = 0; i < (parentEle.children).length; i++){
+      console.log(parentEle.children[i]);
+      console.log(ele);
+      if (parentEle.children[i] == ele){
+        pos = i;
+      }
+    }
+    parentEle.insertBefore(tree, parentEle.children[pos]);
+  }
+  //Set event listeners for new tree
   setAtt();
   addListeners();
   setNew();
   lastKey = undefined;
 }
 
+function insertAtCursor(ele){
+  let sel, range;
+    if (window.getSelection) {
+        sel = window.getSelection();
+        console.log(sel.anchorNode);
+        if (sel.getRangeAt && sel.rangeCount) {
+            range = sel.getRangeAt(0);
+            range.deleteContents();
+            range.insertNode(ele);
+            // Preserve the selection
+            range = range.cloneRange();
+            range.setStartAfter(ele);
+            range.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+  }
+}
+
 function checkKey(e){//function to add functionality to key presses
   let code = (e.keyCode ? e.keyCode : e.which);
   if (code == 13 && lastKey == 13){
     document.execCommand('outdent');
-    document.execCommand('insertHTML', false, "<div></div>");
     e.preventDefault();
     lastKey = undefined;
     //createNewOutline();
   }else if (code == 9){
     e.preventDefault();
     document.execCommand("indent");
+  }else if (code == 13 && lastKey !== 13){
+    //something
   }else{
     lastKey = code;
   }
 
+  let sel = window.getSelection();
+  let ele = sel.anchorNode;
   let keyPressed = e.keyCode;
   let ctrlPressed = e.ctrlKey;
-  if (ctrlPressed && keyPressed == 40) {
-    console.log("ctrl pressed");
-    createNewTree();
-    e.preventDefault();
+  if (ctrlPressed) {
+    if (keyPressed == 39) {
+      newOutline();
+      e.preventDefault();
+    }else{
+      if(ele.id !== "textBody"){
+        e.preventDefault();
+        if (keyPressed == 40) {
+          moveElement(keyPressed);
+        }else if (keyPressed == 38) {
+          moveElement(keyPressed);
+        }
+      }
+    }
   }
+}
+
+function moveElement(keyPressed){
+  let sel = window.getSelection();
+  let ele = sel.anchorNode;
+  let pos;
+  let parentEle = ele;
+
+  while (ele.tagName !== 'LI'){
+    ele = ele.parentElement;//when moving a subtree li is inside a new tree
+  }
+  while (parentEle.tagName !== 'UL'){
+    parentEle = parentEle.parentElement;
+  }
+
+  for (let i = 0; i < (parentEle.children).length; i++){
+    if (parentEle.children[i] == ele){
+      pos = i;
+    }
+  }
+
+  if (keyPressed == 40) {
+    parentEle.insertBefore(ele, parentEle.children[pos+2]);
+  }else if (keyPressed == 38) {
+    if(pos == 0){
+      parentEle = parentEle.parentElement;
+      while (parentEle.tagName !== 'UL'){
+        parentEle = parentEle.parentElement;
+      }
+    }
+    parentEle.insertBefore(ele, parentEle.children[pos-1]);
+  }
+  setEndOfContenteditable(ele);
 }
