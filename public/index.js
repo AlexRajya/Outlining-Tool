@@ -1,6 +1,5 @@
 //Outlining tool JS code
 let lastKey;//global variable to check if double enter is pressed
-let temp;
 
 init();
 
@@ -63,6 +62,7 @@ function init(){
   });
   window.fontSizeChanger.addEventListener("change", function(e) {
     document.execCommand('FontSize', false, e.target.value);
+    e.target.value = 1;
   });
   window.outlineButton.addEventListener("click", newOutline);
   window.centerButton.addEventListener("click", function() {
@@ -160,6 +160,7 @@ function addListeners(){
   for (let i = 0; i < toggler.length; i++){
     if(toggler[i].getAttribute("listen") == "false"){
       toggler[i].addEventListener("click", function(){
+        let temp;
         temp = this.parentElement;
         while(temp.querySelector(".nested") == null){
           temp = temp.parentElement;
@@ -228,8 +229,6 @@ function newOutline(){
     }
 
     for (let i = 0; i < (parentEle.children).length; i++){
-      console.log(parentEle.children[i]);
-      console.log(ele);
       if (parentEle.children[i] == ele){
         pos = i;
       }
@@ -312,8 +311,12 @@ function moveElement(keyPressed){
   while (ele.tagName !== 'LI'){
     ele = ele.parentElement;//when moving a subtree li is inside a new tree
   }
-  while (parentEle.tagName !== 'UL'){
-    parentEle = parentEle.parentElement;
+  if(ele.parentElement.id !== 'textBody'){
+    while (parentEle.tagName !== 'UL'){
+      parentEle = parentEle.parentElement;
+    }
+  }else{
+    parentEle = ele.parentElement;
   }
 
   for (let i = 0; i < (parentEle.children).length; i++){
@@ -321,17 +324,42 @@ function moveElement(keyPressed){
       pos = i;
     }
   }
-
+  //Check whether to move up or down
   if (keyPressed == 40) {
     parentEle.insertBefore(ele, parentEle.children[pos+2]);
   }else if (keyPressed == 38) {
     if(pos == 0){
-      parentEle = parentEle.parentElement;
-      while (parentEle.tagName !== 'UL'){
+      while (parentEle.classList.contains("tree") == false){
         parentEle = parentEle.parentElement;
       }
+      if(parentEle.parentElement.id == "textBody"){
+        parentEle = parentEle.parentElement;
+        parentEle.insertBefore(ele, parentEle.children[pos-1]);
+      }else{
+        let treeEle = parentEle;
+        parentEle = parentEle.parentElement;
+        while (parentEle.tagName !== 'UL'){
+          parentEle = parentEle.parentElement;
+        }
+        for (let i = 0; i < (parentEle.children).length; i++){
+          if (parentEle.children[i] == treeEle){
+            pos = i;
+          }
+        }
+        parentEle.insertBefore(ele, parentEle.children[pos]);
+      }
+
+    }else if((parentEle.children[pos-1]).classList.contains("tree")){
+      let treeElement = parentEle.children[pos-1];
+      let newUL = treeElement.getElementsByClassName('active')[0];
+      if (newUL !== undefined){
+        newUL.appendChild(ele);
+      }else{
+        parentEle.insertBefore(ele, parentEle.children[pos-1]);
+      }
+    }else{
+      parentEle.insertBefore(ele, parentEle.children[pos-1]);
     }
-    parentEle.insertBefore(ele, parentEle.children[pos-1]);
   }
   setEndOfContenteditable(ele);
 }

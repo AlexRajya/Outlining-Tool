@@ -309,6 +309,10 @@ ul, .tree {
   list-style-type: none;
 }
 
+li{
+  list-style-type: none;
+}
+
 .tree {
   margin: 0;
   padding: 0;
