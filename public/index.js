@@ -235,6 +235,7 @@ function newOutline(){
       }
     }
     parentEle.insertBefore(tree, parentEle.children[pos]);
+    setEndOfContenteditable(tree);
   }
   //Set event listeners for new tree
   setAtt();
@@ -296,11 +297,7 @@ function checkKey(e){//function to add functionality to key presses
     }else{
       if(ele.id !== "textBody"){
         e.preventDefault();
-        if (keyPressed == 40) {
-          moveElement(keyPressed);
-        }else if (keyPressed == 38) {
-          moveElement(keyPressed);
-        }
+        moveElement(keyPressed);
       }
     }
   }
