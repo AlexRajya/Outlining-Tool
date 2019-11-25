@@ -1,6 +1,5 @@
 //Outlining tool JS code
 let lastKey;//global variable to check if double enter is pressed
-
 init();
 
 function init(){
@@ -263,7 +262,7 @@ function insertAtCursor(ele){
 }
 
 function checkKey(e){//function to add functionality to key presses
-  let code = (e.keyCode ? e.keyCode : e.which);
+  let code = e.keyCode;
   let sel = window.getSelection();
   let ele = sel.anchorNode;
 
@@ -279,7 +278,7 @@ function checkKey(e){//function to add functionality to key presses
     if (ele.textContent == ""){
       e.preventDefault();
       while (ele.tagName !== 'LI'){
-        ele = ele.parentElement;//when moving a subtree li is inside a new tree
+        ele = ele.parentElement;
       }
       ele.remove();
     }
@@ -287,16 +286,15 @@ function checkKey(e){//function to add functionality to key presses
     lastKey = code;
   }
 
-  let keyPressed = e.keyCode;
   let ctrlPressed = e.ctrlKey;
   if (ctrlPressed) {
-    if (keyPressed == 39) {
+    if (code == 39) {
       newOutline();
       e.preventDefault();
-    }else{
+    }else if(code == 40 || code == 38){
       if(ele.id !== "textBody"){
         e.preventDefault();
-        moveElement(keyPressed);
+        moveElement(code);
       }
     }
   }
