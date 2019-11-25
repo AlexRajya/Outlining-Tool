@@ -202,7 +202,7 @@ function newOutline(){
   //appending into nested Li
   const nestedLi = document.createElement("li");
   nestedUl.appendChild(nestedLi);
-  const span3 = document.createElement("div");
+  const span3 = document.createElement("span");
   span3.classList.add("new");
   span3.tabIndex = "0";
   span3.textContent = "Edit me";
@@ -213,7 +213,7 @@ function newOutline(){
   if(element.classList == undefined){//Checks if inserting on text node
     element = element.parentElement;
   }
-  if(element.id == "textBody"){
+  if(element.id == "textBody" || element.tagName == 'DIV'){
     insertAtCursor(tree);
   }else{
     let ele = element;
@@ -231,6 +231,10 @@ function newOutline(){
       if (parentEle.children[i] == ele){
         pos = i;
       }
+    }
+    if((parentEle.children[pos]).textContent !== ""){
+      span2.textContent = parentEle.children[pos].textContent;
+      parentEle.children[pos].remove();
     }
     parentEle.insertBefore(tree, parentEle.children[pos]);
     setEndOfContenteditable(tree);
