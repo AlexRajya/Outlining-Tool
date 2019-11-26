@@ -236,8 +236,8 @@ function newOutline(){
       span2.textContent = parentEle.children[pos].textContent;
       parentEle.children[pos].remove();
     }
-    parentEle.insertBefore(tree, parentEle.children[pos]);
-    setEndOfContenteditable(tree);
+    parentEle.insertBefore(parentLi, parentEle.children[pos]);
+    setEndOfContenteditable(parentLi);
   }
   //Set event listeners for new tree
   setAtt();
