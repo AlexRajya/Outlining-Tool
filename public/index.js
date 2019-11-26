@@ -271,7 +271,23 @@ function checkKey(e){//function to add functionality to key presses
   let ele = sel.anchorNode;
 
   if (code == 13 && lastKey == 13){
-    document.execCommand('outdent');
+    try{
+      let parentEle = ele.parentElement;
+      while (parentEle.classList.contains("parent") == false){
+        parentEle = parentEle.parentElement;
+      }
+      children = parentEle.children;
+      for (let i = 0; i < children.length; i++){
+        if(children[i].classList.contains('active')){
+          children[i].classList.remove('active');
+        }else if(children[i].classList.contains('caret-down')){
+          children[i].classList.remove('caret-down');
+        }
+      }
+      console.log(children);
+    }catch(err){
+      console.log("Error:"+err);
+    }
     e.preventDefault();
     lastKey = undefined;
   }else if (code == 9){
