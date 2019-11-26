@@ -183,7 +183,6 @@ function newOutline(){
   //Create new tree and Li
   const tree = document.createElement("ul");
   tree.classList.add("tree");
-
   const parentLi = document.createElement("li");
   parentLi.classList.add("parent");
   tree.appendChild(parentLi);
@@ -222,7 +221,7 @@ function newOutline(){
     let parentEle = ele;
 
     while (ele.tagName !== 'LI'){
-      ele = ele.parentElement;//when moving a subtree li is inside a new tree
+      ele = ele.parentElement;
     }
     while (parentEle.tagName !== 'UL'){
       parentEle = parentEle.parentElement;
@@ -275,7 +274,6 @@ function checkKey(e){//function to add functionality to key presses
     document.execCommand('outdent');
     e.preventDefault();
     lastKey = undefined;
-    //createNewOutline();
   }else if (code == 9){
     e.preventDefault();
     document.execCommand("indent");
