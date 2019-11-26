@@ -185,6 +185,7 @@ function newOutline(){
   tree.classList.add("tree");
 
   const parentLi = document.createElement("li");
+  parentLi.classList.add("parent");
   tree.appendChild(parentLi);
   //Children of Li and nested list
   const span1 = document.createElement("span");
@@ -196,9 +197,9 @@ function newOutline(){
   const nestedUl = document.createElement("ul");
   nestedUl.classList.add("nested");
 
-  parentLi.append(span1);
-  parentLi.append(span2);
-  parentLi.append(nestedUl);
+  parentLi.appendChild(span1);
+  parentLi.appendChild(span2);
+  parentLi.appendChild(nestedUl);
   //appending into nested Li
   const nestedLi = document.createElement("li");
   nestedUl.appendChild(nestedLi);
@@ -331,27 +332,30 @@ function moveElement(keyPressed){
     parentEle.insertBefore(ele, parentEle.children[pos+2]);
   }else if (keyPressed == 38) {
     if(pos == 0){
-      while (parentEle.classList.contains("tree") == false){
-        parentEle = parentEle.parentElement;
-      }
-      if(parentEle.parentElement.id == "textBody"){
-        parentEle = parentEle.parentElement;
-        parentEle.insertBefore(ele, parentEle.children[pos-1]);
-      }else{
-        let treeEle = parentEle;
-        parentEle = parentEle.parentElement;
-        while (parentEle.tagName !== 'UL'){
+      try{
+        while (parentEle.classList.contains("parent") == false){
           parentEle = parentEle.parentElement;
         }
-        for (let i = 0; i < (parentEle.children).length; i++){
-          if (parentEle.children[i] == treeEle){
-            pos = i;
+        if(parentEle.parentElement.id == "textBody"){
+          parentEle = parentEle.parentElement;
+          parentEle.insertBefore(ele, parentEle.children[pos-1]);
+        }else{
+          let treeEle = parentEle;
+          parentEle = parentEle.parentElement;
+          while (parentEle.tagName !== 'UL'){
+            parentEle = parentEle.parentElement;
           }
+          for (let i = 0; i < (parentEle.children).length; i++){
+            if (parentEle.children[i] == treeEle){
+              pos = i;
+            }
+          }
+          parentEle.insertBefore(ele, parentEle.children[pos]);
         }
-        parentEle.insertBefore(ele, parentEle.children[pos]);
+      }catch(err){
+        console.log("top of document, cannot go up");
       }
-
-    }else if((parentEle.children[pos-1]).classList.contains("tree")){
+    }else if((parentEle.children[pos-1]).classList.contains("parent")){
       let treeElement = parentEle.children[pos-1];
       let newUL = treeElement.getElementsByClassName('active')[0];
       if (newUL !== undefined){
