@@ -250,7 +250,6 @@ function insertAtCursor(ele){
   let sel, range;
     if (window.getSelection) {
         sel = window.getSelection();
-        console.log(sel.anchorNode);
         if (sel.getRangeAt && sel.rangeCount) {
             range = sel.getRangeAt(0);
             range.deleteContents();
@@ -265,11 +264,20 @@ function insertAtCursor(ele){
   }
 }
 
+function checkParentClass(){
+  parents = document.getElementsByClassName("parent");
+  for (let i = 0; i < parents.length; i++){
+    if(parents[i].querySelector('.nested') == null){
+      parents[i].classList.remove('parent');
+    }
+  }
+}
+
 function checkKey(e){//function to add functionality to key presses
   let code = e.keyCode;
   let sel = window.getSelection();
   let ele = sel.anchorNode;
-
+  checkParentClass();//removes elements that contain parent class without having any children
   if (code == 13 && lastKey == 13){
     try{
       let parentEle = ele.parentElement;
@@ -284,7 +292,6 @@ function checkKey(e){//function to add functionality to key presses
           children[i].classList.remove('caret-down');
         }
       }
-      console.log(children);
     }catch(err){
       console.log("Error:"+err);
     }
