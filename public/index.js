@@ -1,4 +1,5 @@
 //Outlining tool JS code
+'use strict';
 let lastKey;//global variable to check if double enter is pressed
 init();
 
@@ -32,7 +33,7 @@ function init(){
     }
   }
   //text to speech button in help Modal
-  txt = document.getElementById("helpText").textContent;
+  let txt = document.getElementById("helpText").textContent;
   let message = new SpeechSynthesisUtterance(txt);
   function speak(){
     speechSynthesis.speak(message);
@@ -100,13 +101,13 @@ function save(){
   for (let i = 0; i < toggler.length; i++){
     toggler[i].setAttribute("listen","false");
   }
-  saveData = document.getElementById("textBody").innerHTML;
-  var sendObj = {innerHTML:"yyy"};
+  let saveData = document.getElementById("textBody").innerHTML;
+  let sendObj = {innerHTML:"yyy"};
   sendObj.innerHTML = saveData;
-  sendJSON = JSON.stringify(sendObj);
+  let sendJSON = JSON.stringify(sendObj);
 
   let url = window.location.href;
-  var xhr = new XMLHttpRequest();
+  let xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
   xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
   xhr.send(sendJSON);
@@ -167,11 +168,9 @@ function addListeners(){
         if (temp.querySelector(".nested").classList.contains("active")){
           temp.querySelector(".nested").classList.remove("active");
           this.classList.remove("caret-down");
-          console.log("closed");
         }else{
           temp.querySelector(".nested").classList.add("active");
           this.classList.add("caret-down");
-          console.log("opened");
         }
       });
       toggler[i].setAttribute("listen", "true");
@@ -208,27 +207,26 @@ function newOutline(){
   span3.textContent = "Edit me";
   nestedLi.appendChild(span3);
   //append at cursor
-  sel = window.getSelection();
-  element = sel.anchorNode;
+  let sel = window.getSelection();
+  let element = sel.anchorNode;
   if(element.classList == undefined){//Checks if inserting on text node
     element = element.parentElement;
   }
   if(element.id == "textBody" || element.tagName == 'DIV'){
     insertAtCursor(tree);
   }else{
-    let ele = element;
     let pos;
-    let parentEle = ele;
+    let parentEle = element;
 
-    while (ele.tagName !== 'LI'){
-      ele = ele.parentElement;
+    while (element.tagName !== 'LI'){
+      element = element.parentElement;
     }
     while (parentEle.tagName !== 'UL'){
       parentEle = parentEle.parentElement;
     }
 
     for (let i = 0; i < (parentEle.children).length; i++){
-      if (parentEle.children[i] == ele){
+      if (parentEle.children[i] == element){
         pos = i;
       }
     }
@@ -265,7 +263,7 @@ function insertAtCursor(ele){
 }
 
 function checkParentClass(){
-  parents = document.getElementsByClassName("parent");
+  let parents = document.getElementsByClassName("parent");
   for (let i = 0; i < parents.length; i++){
     if(parents[i].querySelector('.nested') == null){
       parents[i].classList.remove('parent');
@@ -284,7 +282,7 @@ function checkKey(e){//function to add functionality to key presses
       while (parentEle.classList.contains("parent") == false){
         parentEle = parentEle.parentElement;
       }
-      children = parentEle.children;
+      let children = parentEle.children;
       for (let i = 0; i < children.length; i++){
         if(children[i].classList.contains('active')){
           children[i].classList.remove('active');
