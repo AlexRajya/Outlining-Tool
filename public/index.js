@@ -92,15 +92,14 @@ async function pageLoaded() {
   let obj = JSON.parse(text);
   const tb = document.getElementById("textBody");
   tb.innerHTML = obj.innerHTML;
-  addListeners();
+  let togglers = document.getElementsByClassName("caret");
+  for (let i = 0; i < togglers.length; i++){
+    toggler[i].addEventListener("click", toggle);
+  }
   setNew();
 }
 
 function save(){
-  let toggler = document.getElementsByClassName("caret");
-  for (let i = 0; i < toggler.length; i++){
-    toggler[i].setAttribute("listen","false");
-  }
   let saveData = document.getElementById("textBody").innerHTML;
   let sendObj = {innerHTML:"yyy"};
   sendObj.innerHTML = saveData;
@@ -146,35 +145,19 @@ function setEndOfContenteditable(contentEditableElement){
     }
 }
 
-function setAtt(){
-  let toggler = document.getElementsByClassName("caret");
-  for (let i = 0; i < toggler.length; i++){
-    if(toggler[i].getAttribute("listen") == undefined){
-      toggler[i].setAttribute("listen","false");
-    }
+function toggle(e){
+  let temp;
+  let toggler = e.target;
+  temp = toggler.parentElement;
+  while(temp.querySelector(".nested") == null){
+    temp = temp.parentElement;
   }
-}
-
-function addListeners(){
-  let toggler = document.getElementsByClassName("caret");
-  for (let i = 0; i < toggler.length; i++){
-    if(toggler[i].getAttribute("listen") == "false"){
-      toggler[i].addEventListener("click", function(){
-        let temp;
-        temp = this.parentElement;
-        while(temp.querySelector(".nested") == null){
-          temp = temp.parentElement;
-        }
-        if (temp.querySelector(".nested").classList.contains("active")){
-          temp.querySelector(".nested").classList.remove("active");
-          this.classList.remove("caret-down");
-        }else{
-          temp.querySelector(".nested").classList.add("active");
-          this.classList.add("caret-down");
-        }
-      });
-      toggler[i].setAttribute("listen", "true");
-    }
+  if (temp.querySelector(".nested").classList.contains("active")){
+    temp.querySelector(".nested").classList.remove("active");
+    toggler.classList.remove("caret-down");
+  }else{
+    temp.querySelector(".nested").classList.add("active");
+    toggler.classList.add("caret-down");
   }
 }
 
@@ -238,8 +221,7 @@ function newOutline(){
     setEndOfContenteditable(parentLi);
   }
   //Set event listeners for new tree
-  setAtt();
-  addListeners();
+  span1.addEventListener("click", toggle);
   setNew();
   lastKey = undefined;
 }
@@ -271,6 +253,8 @@ function checkParentClass(){
   }
 }
 
+let lastCount;
+
 function checkKey(e){//function to add functionality to key presses
   let code = e.keyCode;
   let sel = window.getSelection();
@@ -299,16 +283,34 @@ function checkKey(e){//function to add functionality to key presses
     e.preventDefault();
     document.execCommand("indent");
   }else if (code == 8){
-    if (ele.textContent == ""){
+    if (lastCount == 1 || ele.textContent.length == 0){
       e.preventDefault();
       while (ele.tagName !== 'LI'){
         ele = ele.parentElement;
       }
+      let parentEle = ele;
+      if(ele.parentElement.id !== 'textBody'){
+        while (parentEle.tagName !== 'UL'){
+          parentEle = parentEle.parentElement;
+        }
+      }else{
+        parentEle = ele.parentElement;
+      }
+      let pos;
+      for (let i = 0; i < (parentEle.children).length; i++){
+        if (parentEle.children[i] == ele){
+          pos = i;
+        }
+      }
+      console.log("Element deleted");
+      let previous = parentEle.children[pos-1]
       ele.remove();
+      setEndOfContenteditable(previous);
     }
   }else{
     lastKey = code;
   }
+  lastCount = ele.textContent.length;
 
   let ctrlPressed = e.ctrlKey;
   if (ctrlPressed) {
