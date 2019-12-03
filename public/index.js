@@ -94,7 +94,7 @@ async function pageLoaded() {
   tb.innerHTML = obj.innerHTML;
   let togglers = document.getElementsByClassName("caret");
   for (let i = 0; i < togglers.length; i++){
-    toggler[i].addEventListener("click", toggle);
+    togglers[i].addEventListener("click", toggle);
   }
   setNew();
 }
@@ -314,6 +314,7 @@ function checkKey(e){//function to add functionality to key presses
 
   let ctrlPressed = e.ctrlKey;
   if (ctrlPressed) {
+    ele.parentElement.focus();
     if (code == 39) {
       newOutline();
       e.preventDefault();
