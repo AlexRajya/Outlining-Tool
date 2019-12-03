@@ -1,24 +1,24 @@
-'use strict';
+
 const express = require('express');
 const bodyParser = require('body-parser');
+
 const app = express();
-const fs = require('fs')
-var path = require('path');
+const fs = require('fs');
 
 // viewed at http://localhost:8080
 app.use(express.static(__dirname));
-app.use(express.static("public"));
+app.use(express.static('public'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.post('/', (req, res) => {
-  console.log("saved successfully");
-  fs.writeFileSync("code.txt",JSON.stringify(req.body))
+app.post('/', (req) => {
+  console.log('saved successfully');
+  fs.writeFileSync('code.txt', JSON.stringify(req.body));
 });
 
 const port = 8080;
 
 app.listen(port, () => {
-  console.log('Server running on port:' + port);
+  console.log(`Server running on port:${port}`);
 });

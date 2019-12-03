@@ -14,7 +14,15 @@
   "author": "Alex Rajya",
   "license": "UNLICENSED",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "config": "^3.2.4",
     "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.10.0",
+    "@typescript-eslint/parser": "^2.10.0",
+    "eslint": "^6.7.2",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2"
   }
 }
