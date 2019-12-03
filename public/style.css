@@ -24,7 +24,7 @@
   padding: 0;
   border: 0.0625em solid #888;
   width: 60%;
-  box-shadow: 0 0.25em 0.5em 0 rgba(0,0,0,0.2),0 0.7em 1.2em 0 rgba(0,0,0,0.19);
+  box-shadow: 0 0.25em 0.5em 0 rgba(0,0,0,0.2),0 0.375em 1.2em 0 rgba(0,0,0,0.19);
 }
 
 .modal-content h3{
