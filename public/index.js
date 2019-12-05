@@ -4,14 +4,14 @@ let lastKey;// global variable to check if double enter is pressed
 function setEndOfContenteditable(contentEditableElement) {
   let range; let selection;
   if (document.createRange) {
-    try{
+    try {
       range = document.createRange();
       range.selectNodeContents(contentEditableElement);
       range.collapse(false);
       selection = window.getSelection();
       selection.removeAllRanges();
       selection.addRange(range);
-    }catch(err){
+    } catch (err) {
       console.log(`invalid cursor position:${err}`);
     }
   }
@@ -68,12 +68,12 @@ function toggle(e) {
 function setNew() { // used to instant replace "edit me" text
   const newO = document.getElementsByClassName('new');
   for (let i = 0; i < newO.length; i += 1) {
-    newO[i].addEventListener('click', function() {
+    newO[i].addEventListener('click', function () {
       if (this.classList.contains('new')) {
         this.focus();
       }
     });
-    newO[i].addEventListener('keydown', function(e) {
+    newO[i].addEventListener('keydown', function (e) {
       if (this.classList.contains('new')) {
         if ((e.key).length === 1) { // Checks if alphanumeric or special key e.g. ctrl is pressed
           this.textContent = e.key;
@@ -97,6 +97,32 @@ async function pageLoaded() {
     togglers[i].addEventListener('click', toggle);
   }
   setNew();
+}
+
+function getPos(parentEle, element) {
+  let pos;
+  for (let i = 0; i < (parentEle.children).length; i += 1) {
+    if (parentEle.children[i] === element) {
+      pos = i;
+    }
+  }
+  return pos;
+}
+
+function getParentLi(ele) { // find parent LI of a text node
+  let element = ele;
+  while (element.tagName !== 'LI') {
+    element = element.parentElement;
+  }
+  return element;
+}
+
+function getParentUl(ele) {
+  let element = ele;
+  while (element.tagName !== 'UL') {
+    element = element.parentElement;
+  }
+  return element;
 }
 
 function newOutline() {
@@ -136,21 +162,10 @@ function newOutline() {
   if (element.id === 'textBody' || element.tagName === 'DIV' || element.tagName === 'UL') {
     insertAtCursor(tree);
   } else {
-    let pos;
-    let parentEle = element;
+    element = getParentLi(element);
+    const parentEle = getParentUl(element);
+    const pos = getPos(parentEle, element);
 
-    while (element.tagName !== 'LI') {
-      element = element.parentElement;
-    }
-    while (parentEle.tagName !== 'UL') {
-      parentEle = parentEle.parentElement;
-    }
-
-    for (let i = 0; i < (parentEle.children).length; i += 1) {
-      if (parentEle.children[i] === element) {
-        pos = i;
-      }
-    }
     if ((parentEle.children[pos]).textContent !== '') {
       span2.textContent = parentEle.children[pos].textContent;
       parentEle.children[pos].remove();
@@ -178,25 +193,16 @@ let lastCount;
 function moveElement(keyPressed) {
   const sel = window.getSelection();
   let ele = sel.anchorNode;
-  let pos;
   let parentEle = ele;
+  ele = getParentLi(ele);
 
-  while (ele.tagName !== 'LI') {
-    ele = ele.parentElement;// when moving a subtree li is inside a new tree
-  }
   if (ele.parentElement.id !== 'textBody') {
-    while (parentEle.tagName !== 'UL') {
-      parentEle = parentEle.parentElement;
-    }
+    parentEle = getParentUl(ele);
   } else {
     parentEle = ele.parentElement;
   }
 
-  for (let i = 0; i < (parentEle.children).length; i += 1) {
-    if (parentEle.children[i] === ele) {
-      pos = i;
-    }
-  }
+  let pos = getPos(parentEle, ele);
   // Check whether to move up or down
   if (keyPressed === 40) {
     parentEle.insertBefore(ele, parentEle.children[pos + 2]);
@@ -211,15 +217,9 @@ function moveElement(keyPressed) {
           parentEle.insertBefore(ele, parentEle.children[pos - 1]);
         } else {
           const treeEle = parentEle;
-          parentEle = parentEle.parentElement;
-          while (parentEle.tagName !== 'UL') {
-            parentEle = parentEle.parentElement;
-          }
-          for (let i = 0; i < (parentEle.children).length; i += 1) {
-            if (parentEle.children[i] === treeEle) {
-              pos = i;
-            }
-          }
+          parentEle = parentEle.parentElement;// break out of current UL
+          parentEle = getParentUl(parentEle);
+          pos = getPos(parentEle, treeEle);
           parentEle.insertBefore(ele, parentEle.children[pos]);
         }
       } catch (err) {
@@ -270,26 +270,16 @@ function checkKey(e) { // function to add functionality to key presses
   } else if (code === 8) {
     if (lastCount === 1 || ele.textContent.length === 0) {
       e.preventDefault();
-      while (ele.tagName !== 'LI') {
-        ele = ele.parentElement;
-      }
+      ele = getParentLi(ele);
       let parentEle = ele;
       if (ele.parentElement.id !== 'textBody') {
-        while (parentEle.tagName !== 'UL') {
-          parentEle = parentEle.parentElement;
-        }
+        parentEle = getParentUl(parentEle);
       } else {
         parentEle = ele.parentElement;
       }
-      let pos;
-      for (let i = 0; i < (parentEle.children).length; i += 1) {
-        if (parentEle.children[i] === ele) {
-          pos = i;
-        }
-      }
-      const previous = parentEle.children[pos - 1];
+      const pos = getPos(parentEle, ele);
       ele.remove();
-      setEndOfContenteditable(previous);
+      setEndOfContenteditable(parentEle.children[pos - 1]);
     }
   } else {
     lastKey = code;
