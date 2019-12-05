@@ -269,17 +269,19 @@ function checkKey(e) { // function to add functionality to key presses
     document.execCommand('indent');
   } else if (code === 8) {
     if (lastCount === 1 || ele.textContent.length === 0) {
-      e.preventDefault();
-      ele = getParentLi(ele);
-      let parentEle = ele;
-      if (ele.parentElement.id !== 'textBody') {
-        parentEle = getParentUl(parentEle);
-      } else {
-        parentEle = ele.parentElement;
+      if(ele.parentElement.tagName !== 'DIV'){
+        e.preventDefault();
+        ele = getParentLi(ele);
+        let parentEle = ele;
+        if (ele.parentElement.id !== 'textBody') {
+          parentEle = getParentUl(parentEle);
+        } else {
+          parentEle = ele.parentElement;
+        }
+        const pos = getPos(parentEle, ele);
+        ele.remove();
+        setEndOfContenteditable(parentEle.children[pos - 1]);
       }
-      const pos = getPos(parentEle, ele);
-      ele.remove();
-      setEndOfContenteditable(parentEle.children[pos - 1]);
     }
   } else {
     lastKey = code;
