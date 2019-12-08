@@ -12,7 +12,7 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.post('/', (req) => {
+app.post('/save', (req) => {
   console.log('saved successfully');
   fs.writeFileSync('code.txt', JSON.stringify(req.body));
 });
