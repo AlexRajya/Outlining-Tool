@@ -42,7 +42,7 @@ function save() {
   sendObj.innerHTML = saveData;
   const sendJSON = JSON.stringify(sendObj);
 
-  const url = window.location.href;
+  const url = window.location.href+'save';
   const xhr = new XMLHttpRequest();
   xhr.open('POST', url, true);
   xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
@@ -304,6 +304,7 @@ function checkKey(e) { // function to add functionality to key presses
 }
 
 window.onload = () => {
+  pageLoaded();
   // Sticky Header JS code
   // setInterval(autosave,10000);
   const header = document.getElementById('stickyHeader');
@@ -372,7 +373,6 @@ window.onload = () => {
     }
   });
 
-  window.addEventListener('load', pageLoaded);
   window.addEventListener('pagehide', save);
   window.addEventListener('beforeunload', save);
 };
