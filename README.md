@@ -18,3 +18,4 @@ Help button ("?" button on header) with text to speech of all feature for disabi
 Saves user's changes on page close and loads on page open again.
 Clear button to reset document. 
 Collabritive editing
+Printing on CTRL+P which maintains outline styling
