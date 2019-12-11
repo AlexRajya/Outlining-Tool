@@ -1,7 +1,9 @@
 // Outlining tool JS code
 let lastKey;// global variable to check if double enter is pressed
+let ws;
+const myid = Math.random().toString(36).substring(2);//Unique id for each client
 
-function setEndOfContenteditable(contentEditableElement) {
+function setEndOfContenteditable(contentEditableElement) {//append cursor to end of a contentEditable Element
   let range; let selection;
   if (document.createRange) {
     try {
@@ -17,7 +19,7 @@ function setEndOfContenteditable(contentEditableElement) {
   }
 }
 
-function insertAtCursor(ele) {
+function insertAtCursor(ele) {//insert node at current cursor pos
   let sel; let
     range;
   if (window.getSelection) {
@@ -36,13 +38,13 @@ function insertAtCursor(ele) {
   }
 }
 
-function save() {
+function save() {//Save data sent to server to be saved
   const saveData = document.getElementById('textBody').innerHTML;
   const sendObj = { innerHTML: 'yyy' };
   sendObj.innerHTML = saveData;
   const sendJSON = JSON.stringify(sendObj);
 
-  const url = window.location.href+'save';
+  const url = `${window.location.href}save`;
   const xhr = new XMLHttpRequest();
   xhr.open('POST', url, true);
   xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
@@ -86,7 +88,7 @@ function setNew() { // used to instant replace "edit me" text
   }
 }
 
-async function pageLoaded() {
+async function pageLoaded() {//Load page from txt file containing json object of save data
   const response = await fetch('code.txt');
   const text = await response.text();
   const obj = JSON.parse(text);
@@ -99,7 +101,7 @@ async function pageLoaded() {
   setNew();
 }
 
-function getPos(parentEle, element) {
+function getPos(parentEle, element) {//Get elements pos amongst children
   let pos;
   for (let i = 0; i < (parentEle.children).length; i += 1) {
     if (parentEle.children[i] === element) {
@@ -117,12 +119,21 @@ function getParentLi(ele) { // find parent LI of a text node
   return element;
 }
 
-function getParentUl(ele) {
+function getParentUl(ele) { //find parent UL of LI element
   let element = ele;
   while (element.tagName !== 'UL') {
     element = element.parentElement;
   }
   return element;
+}
+
+function forceRefresh() {
+  const clientEdit = {
+    content: document.getElementById('textBody').innerHTML,
+    id: myid,
+    sync: undefined
+  };
+  ws.send(JSON.stringify(clientEdit));
 }
 
 function newOutline() {
@@ -175,8 +186,10 @@ function newOutline() {
   }
   // Set event listeners for new tree
   span1.addEventListener('click', toggle);
+  span1.addEventListener('click', forceRefresh);
   setNew();
   lastKey = undefined;
+  forceRefresh();
 }
 
 function checkParentClass() {
@@ -269,7 +282,7 @@ function checkKey(e) { // function to add functionality to key presses
     document.execCommand('indent');
   } else if (code === 8) {
     if (lastCount === 1 || ele.textContent.length === 0) {
-      if(ele.parentElement.tagName !== 'DIV'){
+      if (ele.parentElement.tagName !== 'DIV') {
         e.preventDefault();
         ele = getParentLi(ele);
         let parentEle = ele;
@@ -298,15 +311,127 @@ function checkKey(e) { // function to add functionality to key presses
       if (ele.id !== 'textBody') {
         e.preventDefault();
         moveElement(code);
+        forceRefresh();
       }
     }
   }
 }
 
+let buffer = [];
+function refresh(e) {
+  //JSON object to send necessary information to other clients
+  const clientEdit = {
+    content: document.getElementById('textBody').innerHTML,
+    id: myid,
+    sync: undefined
+  };
+  buffer.push(e.keyCode);
+  if (e.keyCode === 32 || buffer.length >= 15) {
+    //sync clients on spacebar or buffer is greater than 15
+    ws.send(JSON.stringify(clientEdit));
+    buffer = [];
+  }
+}
+
+function saveSelection(containerEl) {//save clients cursor position
+  const doc = containerEl.ownerDocument;
+  const win = doc.defaultView;
+  const range = win.getSelection().getRangeAt(0);
+  const preSelectionRange = range.cloneRange();
+  preSelectionRange.selectNodeContents(containerEl);
+  preSelectionRange.setEnd(range.startContainer, range.startOffset);
+  const start = preSelectionRange.toString().length;
+
+  return {
+    start,
+    end: start + range.toString().length,
+  };
+}
+
+function restoreSelection(containerEl, savedSel) {//restore clients cursor pos
+  const doc = containerEl.ownerDocument;
+  const win = doc.defaultView;
+  let charIndex = 0;
+  const range = doc.createRange();
+  range.setStart(containerEl, 0);
+  range.collapse(true);
+  const nodeStack = [containerEl];
+  let node; let foundStart = false; let stop = false;
+
+  while (!stop && (node = nodeStack.pop())) {
+    if (node.nodeType === 3) {
+      const nextCharIndex = charIndex + node.length;
+      if (!foundStart && savedSel.start >= charIndex && savedSel.start <= nextCharIndex) {
+        range.setStart(node, savedSel.start - charIndex);
+        foundStart = true;
+      }
+      if (foundStart && savedSel.end >= charIndex && savedSel.end <= nextCharIndex) {
+        range.setEnd(node, savedSel.end - charIndex);
+        stop = true;
+      }
+      charIndex = nextCharIndex;
+    } else {
+      let i = node.childNodes.length;
+      while (i--) {
+        nodeStack.push(node.childNodes[i]);
+      }
+    }
+  }
+
+  const sel = win.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+function receivedMessageFromServer(e) {
+  const clientEdit = JSON.parse(e.data);
+  if(clientEdit.sync && clientEdit.id !== myid){//If new client, sync with other clients
+    forceRefresh();
+    console.log('Synced');
+  }else if (clientEdit.sync === undefined){//If not new client, update textBody
+    const textBody = document.getElementById('textBody');
+
+    textBody.focus();
+    const divSelection = saveSelection(textBody);
+    console.log(divSelection);
+
+    textBody.innerHTML = clientEdit.content;
+    textBody.focus();
+    restoreSelection(textBody, divSelection);
+    const togglers = document.getElementsByClassName('caret');
+    for (let i = 0; i < togglers.length; i += 1) {
+      togglers[i].addEventListener('click', toggle);
+      togglers[i].addEventListener('click', forceRefresh);
+    }
+    setNew();
+  }
+}
+
+function syncClients() {//Sync function for new client
+  try{
+    const clientEdit = {
+      content: document.getElementById('textBody').innerHTML,
+      id: myid,
+      sync: true
+    };
+    ws.send(JSON.stringify(clientEdit));
+    clearInterval(sync);
+  }catch(err){
+    console.log("Not connected to websocket");
+  }
+}
+
+let sync = setInterval(syncClients, 500);//Deleted after forcing sync to new client
+
 window.onload = () => {
+  try {
+    ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}`);
+    ws.addEventListener('message', receivedMessageFromServer);
+  } catch (err) {
+    console.log('failed to connect to WebSocket');
+  }
   pageLoaded();
   // Sticky Header JS code
-  // setInterval(autosave,10000);
   const header = document.getElementById('stickyHeader');
   const sticky = header.offsetTop;
 
@@ -342,6 +467,7 @@ window.onload = () => {
   document.getElementById('textToSpeech').addEventListener('click', speak);
   // Base event listeners
   document.getElementById('textBody').addEventListener('keydown', checkKey);
+  document.getElementById('textBody').addEventListener('keyup', refresh);
 
   window.boldButton.addEventListener('click', () => {
     document.execCommand('bold', false, null);
