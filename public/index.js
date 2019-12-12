@@ -253,6 +253,24 @@ function moveElement(keyPressed) {
   setEndOfContenteditable(ele);
 }
 
+function checkChildren(){
+  let parentLi;
+  const nestedUls = document.getElementsByClassName('nested');
+  for (let i = 0; i < nestedUls.length; i += 1) {
+    if(nestedUls[i].children.length === 0){
+      try{
+        parentLi = nestedUls[i].parentElement;
+        console.log(parentLi.querySelector(".caret"));
+        parentLi.querySelector(".caret").classList.remove("caret-down");
+        parentLi.querySelector(".caret").classList.remove("caret");
+      }catch(err){
+        //ignore as sometimes nested li is deleted when last child removed
+      }  
+    }
+  }
+
+}
+
 function checkKey(e) { // function to add functionality to key presses
   const code = e.keyCode;
   const sel = window.getSelection();
@@ -293,8 +311,13 @@ function checkKey(e) { // function to add functionality to key presses
         }
         const pos = getPos(parentEle, ele);
         ele.remove();
-        setEndOfContenteditable(parentEle.children[pos - 1]);
+        try{
+          setEndOfContenteditable(parentEle.children[pos - 1]);
+        }catch(err){
+          //ignore
+        }
       }
+      checkChildren();
     }
   } else {
     lastKey = code;
