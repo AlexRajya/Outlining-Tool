@@ -311,9 +311,20 @@ function checkKey(e) { // function to add functionality to key presses
       if (ele.id !== 'textBody') {
         e.preventDefault();
         moveElement(code);
-        forceRefresh();
       }
     }
+  }
+}
+
+
+let lastKeyUp;
+function checkCTRL(e){
+  if(e.ctrlKey === false && lastKeyUp === 17){
+    forceRefresh();
+    lastKeyUp = undefined;
+  }
+  if(e.keyCode === 17){
+    lastKeyUp = 17;
   }
 }
 
@@ -393,7 +404,6 @@ function receivedMessageFromServer(e) {
 
     textBody.focus();
     const divSelection = saveSelection(textBody);
-    console.log(divSelection);
 
     textBody.innerHTML = clientEdit.content;
     textBody.focus();
@@ -468,6 +478,7 @@ window.onload = () => {
   // Base event listeners
   document.getElementById('textBody').addEventListener('keydown', checkKey);
   document.getElementById('textBody').addEventListener('keyup', refresh);
+  document.getElementById('textBody').addEventListener('keyup', checkCTRL);
 
   window.boldButton.addEventListener('click', () => {
     document.execCommand('bold', false, null);
@@ -496,6 +507,7 @@ window.onload = () => {
     if (window.confirm('Are you sure you want to clear the page?')) {
       console.log('document cleared');
       document.getElementById('textBody').innerHTML = '';
+      forceRefresh();
     }
   });
 
