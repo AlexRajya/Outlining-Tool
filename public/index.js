@@ -1,9 +1,10 @@
 // Outlining tool JS code
 let lastKey;// global variable to check if double enter is pressed
 let ws;
-const myid = Math.random().toString(36).substring(2);//Unique id for each client
+const myid = Math.random().toString(36).substring(2);// Unique id for each client
 
-function setEndOfContenteditable(contentEditableElement) {//append cursor to end of a contentEditable Element
+function setEndOfContenteditable(contentEditableElement) {
+  // append cursor to end of a contentEditable Element
   let range; let selection;
   if (document.createRange) {
     try {
@@ -19,7 +20,7 @@ function setEndOfContenteditable(contentEditableElement) {//append cursor to end
   }
 }
 
-function insertAtCursor(ele) {//insert node at current cursor pos
+function insertAtCursor(ele) { // insert node at current cursor pos
   let sel; let range;
   if (window.getSelection) {
     sel = window.getSelection();
@@ -37,7 +38,7 @@ function insertAtCursor(ele) {//insert node at current cursor pos
   }
 }
 
-function save() {//Save data sent to server to be saved
+function save() { // Save data sent to server to be saved
   const saveData = document.getElementById('textBody').innerHTML;
   const sendObj = { innerHTML: 'toBeReplaced' };
   sendObj.innerHTML = saveData;
@@ -50,7 +51,7 @@ function save() {//Save data sent to server to be saved
   xhr.send(sendJSON);
 }
 
-function toggle(e) {//Open list on clicking "+" toggler or close on "-"
+function toggle(e) { // Open list on clicking "+" toggler or close on "-"
   let nestedUl;
   const toggler = e.target;
   nestedUl = toggler.parentElement;
@@ -87,7 +88,8 @@ function setNew() { // used to replace "edit me" text on click
   }
 }
 
-async function pageLoaded() {//Load page from txt file containing json object of save data
+async function pageLoaded() {
+  // Load page from txt file containing json object of save data
   const response = await fetch('code.txt');
   const text = await response.text();
   const saveData = JSON.parse(text);
@@ -100,7 +102,8 @@ async function pageLoaded() {//Load page from txt file containing json object of
   setNew();
 }
 
-function getPos(parentEle, element) {//Get currently selected elements pos amongst parent's children
+function getPos(parentEle, element) {
+  // Get currently selected elements pos amongst parent's children
   let pos;
   for (let i = 0; i < (parentEle.children).length; i += 1) {
     if (parentEle.children[i] === element) {
@@ -118,7 +121,7 @@ function getParentLi(ele) { // find parent LI of a text node
   return element;
 }
 
-function getParentUl(ele) { //find parent UL of LI element
+function getParentUl(ele) { // find parent UL of LI element
   let element = ele;
   while (element.tagName !== 'UL') {
     element = element.parentElement;
@@ -182,7 +185,7 @@ function newOutline() {
   forceRefresh();
 }
 
-function checkParentClass() {//Checks if any element that should not contains parent class
+function checkParentClass() { // Checks if any element that should not contains parent class
   const parents = document.getElementsByClassName('parent');
   for (let i = 0; i < parents.length; i += 1) {
     if (parents[i].querySelector('.nested') === null) {
@@ -191,7 +194,7 @@ function checkParentClass() {//Checks if any element that should not contains pa
   }
 }
 
-let lastCount;//Variable to check element length
+let lastCount;// Variable to check element length
 
 function moveElement(keyPressed) {
   const sel = window.getSelection();
@@ -228,7 +231,7 @@ function moveElement(keyPressed) {
       } catch (err) {
         console.log('top of document, cannot go up');
       }
-    } else if ((parentEle.children[pos - 1]).classList.contains('parent')) {//Checks if element above is on a new level
+    } else if ((parentEle.children[pos - 1]).classList.contains('parent')) { // Checks if element above is on a new level
       const treeElement = parentEle.children[pos - 1];
       const newUL = treeElement.getElementsByClassName('active')[0];
       if (newUL !== undefined) {
@@ -243,24 +246,24 @@ function moveElement(keyPressed) {
   setEndOfContenteditable(ele);
 }
 
-function checkChildren(){//Removes "+/-" if element has no children
+function checkChildren() { // Removes "+/-" if element has no children
   let parentLi;
   const nestedUls = document.getElementsByClassName('nested');
   for (let i = 0; i < nestedUls.length; i += 1) {
-    if(nestedUls[i].children.length === 0){
-      try{
+    if (nestedUls[i].children.length === 0) {
+      try {
         parentLi = nestedUls[i].parentElement;
-        console.log(parentLi.querySelector(".caret"));
-        parentLi.querySelector(".caret").classList.remove("caret-down");
-        parentLi.querySelector(".caret").classList.remove("caret");
-      }catch(err){
-        //ignore as sometimes nested li is deleted when last child removed
+        console.log(parentLi.querySelector('.caret'));
+        parentLi.querySelector('.caret').classList.remove('caret-down');
+        parentLi.querySelector('.caret').classList.remove('caret');
+      } catch (err) {
+        // ignore as sometimes nested li is deleted when last child removed
       }
     }
   }
 }
 
-function doubleEnterPress(ele){
+function doubleEnterPress(ele) {
   let parentEle = ele.parentElement;
   while (parentEle.classList.contains('parent') === false) {
     parentEle = parentEle.parentElement;
@@ -275,7 +278,7 @@ function doubleEnterPress(ele){
   }
 }
 
-function deleteNode(ele){
+function deleteNode(ele) {
   let parentEle = ele;
   if (ele.parentElement.id !== 'textBody') {
     parentEle = getParentUl(parentEle);
@@ -284,9 +287,9 @@ function deleteNode(ele){
   }
   const pos = getPos(parentEle, ele);
   ele.remove();
-  try{
+  try {
     setEndOfContenteditable(parentEle.children[pos - 1]);
-  }catch(err){
+  } catch (err) {
     setEndOfContenteditable(parentEle);
   }
 }
@@ -316,7 +319,7 @@ function checkKey(e) { // function to add functionality to key presses
       }
       checkChildren();
       lastCount = undefined;
-    }else{
+    } else {
       lastCount = ele.textContent.length;
     }
   } else {
@@ -325,11 +328,11 @@ function checkKey(e) { // function to add functionality to key presses
 
   const ctrlPressed = e.ctrlKey;
   if (ctrlPressed) {
-    ele.parentElement.focus();//focus element available for moving
-    if (code === 39) {//CTRL RIGHTARROW creates new level
+    ele.parentElement.focus();// focus element available for moving
+    if (code === 39) { // CTRL RIGHTARROW creates new level
       newOutline();
       e.preventDefault();
-    } else if (code === 40 || code === 38) {//CTRL UP/DOWN moves element
+    } else if (code === 40 || code === 38) { // CTRL UP/DOWN moves element
       if (ele.id !== 'textBody') {
         e.preventDefault();
         moveElement(code);
@@ -339,19 +342,19 @@ function checkKey(e) { // function to add functionality to key presses
 }
 
 
-let ctrlWasPressed;//Update when after someone moves an element with CTRL UP/DOWN
-function checkCTRL(e){
-  if(e.ctrlKey === false && ctrlWasPressed === true){
+let ctrlWasPressed;// Update when after someone moves an element with CTRL UP/DOWN
+function checkCTRL(e) {
+  if (e.ctrlKey === false && ctrlWasPressed === true) {
     forceRefresh();
     lastKeyUp = undefined;
     ctrlWasPressed = false;
   }
-  if(e.keyCode === 17){
+  if (e.keyCode === 17) {
     ctrlWasPressed = true;
   }
 }
 
-function saveSelection(containerEl) {//save clients cursor position
+function saveSelection(containerEl) { // save clients cursor position
   const doc = containerEl.ownerDocument;
   const win = doc.defaultView;
   const range = win.getSelection().getRangeAt(0);
@@ -366,7 +369,7 @@ function saveSelection(containerEl) {//save clients cursor position
   };
 }
 
-function restoreSelection(containerEl, savedSel) {//restore clients cursor pos
+function restoreSelection(containerEl, savedSel) { // restore clients cursor pos
   const doc = containerEl.ownerDocument;
   const win = doc.defaultView;
   let charIndex = 0;
@@ -402,13 +405,13 @@ function restoreSelection(containerEl, savedSel) {//restore clients cursor pos
 }
 
 
-//WEBSOCKET FUNCTIONS
+// WEBSOCKET FUNCTIONS
 function receivedMessageFromServer(e) {
   const clientEdit = JSON.parse(e.data);
-  if(clientEdit.sync && clientEdit.id !== myid){//If new client, sync with other clients
+  if (clientEdit.sync && clientEdit.id !== myid) { // If new client, sync with other clients
     forceRefresh();
     console.log('Synced');
-  }else if (clientEdit.sync === undefined){//If not new client, update textBody
+  } else if (clientEdit.sync === undefined) { // If not new client, update textBody
     const textBody = document.getElementById('textBody');
 
     textBody.focus();
@@ -417,7 +420,7 @@ function receivedMessageFromServer(e) {
     textBody.innerHTML = clientEdit.content;
     textBody.focus();
     restoreSelection(textBody, divSelection);
-    //reset event listeners
+    // reset event listeners
     const togglers = document.getElementsByClassName('caret');
     for (let i = 0; i < togglers.length; i += 1) {
       togglers[i].addEventListener('click', toggle);
@@ -427,51 +430,51 @@ function receivedMessageFromServer(e) {
   }
 }
 
-let buffer = [];//Buffer to update other clients every 15 chars
+let buffer = [];// Buffer to update other clients every 15 chars
 function refresh(e) {
-  //JSON object to send necessary information to other clients
+  // JSON object to send necessary information to other clients
   const clientEdit = {
     content: document.getElementById('textBody').innerHTML,
     id: myid,
-    sync: undefined
+    sync: undefined,
   };
   buffer.push(e.keyCode);
   if (e.keyCode === 32 || buffer.length >= 15) {
-    //sync clients on spacebar or buffer is greater than 15
+    // sync clients on spacebar or buffer is greater than 15
     ws.send(JSON.stringify(clientEdit));
     buffer = [];
   }
 }
 
-function forceRefresh() {//Force update on certain client interactions
+function forceRefresh() { // Force update on certain client interactions
   const clientEdit = {
     content: document.getElementById('textBody').innerHTML,
     id: myid,
-    sync: undefined
+    sync: undefined,
   };
   ws.send(JSON.stringify(clientEdit));
 }
 
-function syncClients() {//Sync function for new client
-  try{
+function syncClients() { // Sync function for new client
+  try {
     const clientEdit = {
       content: document.getElementById('textBody').innerHTML,
       id: myid,
-      sync: true
+      sync: true,
     };
     ws.send(JSON.stringify(clientEdit));
     clearInterval(sync);
-  }catch(err){
-    console.log("Not connected to websocket");
+  } catch (err) {
+    console.log('Not connected to websocket');
   }
 }
 
-let sync = setInterval(syncClients, 500);//Deleted after forcing sync to new client
-//END OF WEBSOCKET FUNCTIONS
+let sync = setInterval(syncClients, 500);// Deleted after forcing sync to new client
+// END OF WEBSOCKET FUNCTIONS
 
-//Initialise
+// Initialise
 window.onload = () => {
-  try {//Connect to websocket
+  try { // Connect to websocket
     ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}`);
     ws.addEventListener('message', receivedMessageFromServer);
   } catch (err) {
