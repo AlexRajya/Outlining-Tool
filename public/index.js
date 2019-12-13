@@ -20,8 +20,7 @@ function setEndOfContenteditable(contentEditableElement) {//append cursor to end
 }
 
 function insertAtCursor(ele) {//insert node at current cursor pos
-  let sel; let
-    range;
+  let sel; let range;
   if (window.getSelection) {
     sel = window.getSelection();
     if (sel.getRangeAt && sel.rangeCount) {
@@ -40,7 +39,7 @@ function insertAtCursor(ele) {//insert node at current cursor pos
 
 function save() {//Save data sent to server to be saved
   const saveData = document.getElementById('textBody').innerHTML;
-  const sendObj = { innerHTML: 'yyy' };
+  const sendObj = { innerHTML: 'toBeReplaced' };
   sendObj.innerHTML = saveData;
   const sendJSON = JSON.stringify(sendObj);
 
@@ -51,31 +50,31 @@ function save() {//Save data sent to server to be saved
   xhr.send(sendJSON);
 }
 
-function toggle(e) {
-  let temp;
+function toggle(e) {//Open list on clicking "+" toggler or close on "-"
+  let nestedUl;
   const toggler = e.target;
-  temp = toggler.parentElement;
-  while (temp.querySelector('.nested') === null) {
-    temp = temp.parentElement;
+  nestedUl = toggler.parentElement;
+  while (nestedUl.querySelector('.nested') === null) {
+    nestedUl = nestedUl.parentElement;
   }
-  if (temp.querySelector('.nested').classList.contains('active')) {
-    temp.querySelector('.nested').classList.remove('active');
+  if (nestedUl.querySelector('.nested').classList.contains('active')) {
+    nestedUl.querySelector('.nested').classList.remove('active');
     toggler.classList.remove('caret-down');
   } else {
-    temp.querySelector('.nested').classList.add('active');
+    nestedUl.querySelector('.nested').classList.add('active');
     toggler.classList.add('caret-down');
   }
 }
 
-function setNew() { // used to instant replace "edit me" text
-  const newO = document.getElementsByClassName('new');
-  for (let i = 0; i < newO.length; i += 1) {
-    newO[i].addEventListener('click', function () {
+function setNew() { // used to replace "edit me" text on click
+  const newText = document.getElementsByClassName('new');
+  for (let i = 0; i < newText.length; i += 1) {
+    newText[i].addEventListener('click', function () {
       if (this.classList.contains('new')) {
         this.focus();
       }
     });
-    newO[i].addEventListener('keydown', function (e) {
+    newText[i].addEventListener('keydown', function (e) {
       if (this.classList.contains('new')) {
         if ((e.key).length === 1) { // Checks if alphanumeric or special key e.g. ctrl is pressed
           this.textContent = e.key;
@@ -91,9 +90,9 @@ function setNew() { // used to instant replace "edit me" text
 async function pageLoaded() {//Load page from txt file containing json object of save data
   const response = await fetch('code.txt');
   const text = await response.text();
-  const obj = JSON.parse(text);
-  const tb = document.getElementById('textBody');
-  tb.innerHTML = obj.innerHTML;
+  const saveData = JSON.parse(text);
+  const textBody = document.getElementById('textBody');
+  textBody.innerHTML = saveData.innerHTML;
   const togglers = document.getElementsByClassName('caret');
   for (let i = 0; i < togglers.length; i += 1) {
     togglers[i].addEventListener('click', toggle);
@@ -101,7 +100,7 @@ async function pageLoaded() {//Load page from txt file containing json object of
   setNew();
 }
 
-function getPos(parentEle, element) {//Get elements pos amongst children
+function getPos(parentEle, element) {//Get currently selected elements pos amongst parent's children
   let pos;
   for (let i = 0; i < (parentEle.children).length; i += 1) {
     if (parentEle.children[i] === element) {
@@ -125,15 +124,6 @@ function getParentUl(ele) { //find parent UL of LI element
     element = element.parentElement;
   }
   return element;
-}
-
-function forceRefresh() {
-  const clientEdit = {
-    content: document.getElementById('textBody').innerHTML,
-    id: myid,
-    sync: undefined
-  };
-  ws.send(JSON.stringify(clientEdit));
 }
 
 function newOutline() {
@@ -192,7 +182,7 @@ function newOutline() {
   forceRefresh();
 }
 
-function checkParentClass() {
+function checkParentClass() {//Checks if any element that should not contains parent class
   const parents = document.getElementsByClassName('parent');
   for (let i = 0; i < parents.length; i += 1) {
     if (parents[i].querySelector('.nested') === null) {
@@ -201,7 +191,7 @@ function checkParentClass() {
   }
 }
 
-let lastCount;
+let lastCount;//Variable to check element length
 
 function moveElement(keyPressed) {
   const sel = window.getSelection();
@@ -230,7 +220,7 @@ function moveElement(keyPressed) {
           parentEle.insertBefore(ele, parentEle.children[pos - 1]);
         } else {
           const treeEle = parentEle;
-          parentEle = parentEle.parentElement;// break out of current UL
+          parentEle = parentEle.parentElement;// break out of current UL to next level up
           parentEle = getParentUl(parentEle);
           pos = getPos(parentEle, treeEle);
           parentEle.insertBefore(ele, parentEle.children[pos]);
@@ -238,7 +228,7 @@ function moveElement(keyPressed) {
       } catch (err) {
         console.log('top of document, cannot go up');
       }
-    } else if ((parentEle.children[pos - 1]).classList.contains('parent')) {
+    } else if ((parentEle.children[pos - 1]).classList.contains('parent')) {//Checks if element above is on a new level
       const treeElement = parentEle.children[pos - 1];
       const newUL = treeElement.getElementsByClassName('active')[0];
       if (newUL !== undefined) {
@@ -253,7 +243,7 @@ function moveElement(keyPressed) {
   setEndOfContenteditable(ele);
 }
 
-function checkChildren(){
+function checkChildren(){//Removes "+/-" if element has no children
   let parentLi;
   const nestedUls = document.getElementsByClassName('nested');
   for (let i = 0; i < nestedUls.length; i += 1) {
@@ -265,10 +255,40 @@ function checkChildren(){
         parentLi.querySelector(".caret").classList.remove("caret");
       }catch(err){
         //ignore as sometimes nested li is deleted when last child removed
-      }  
+      }
     }
   }
+}
 
+function doubleEnterPress(ele){
+  let parentEle = ele.parentElement;
+  while (parentEle.classList.contains('parent') === false) {
+    parentEle = parentEle.parentElement;
+  }
+  const { children } = parentEle;
+  for (let i = 0; i < children.length; i += 1) {
+    if (children[i].classList.contains('active')) {
+      children[i].classList.remove('active');
+    } else if (children[i].classList.contains('caret-down')) {
+      children[i].classList.remove('caret-down');
+    }
+  }
+}
+
+function deleteNode(ele){
+  let parentEle = ele;
+  if (ele.parentElement.id !== 'textBody') {
+    parentEle = getParentUl(parentEle);
+  } else {
+    parentEle = ele.parentElement;
+  }
+  const pos = getPos(parentEle, ele);
+  ele.remove();
+  try{
+    setEndOfContenteditable(parentEle.children[pos - 1]);
+  }catch(err){
+    setEndOfContenteditable(parentEle);
+  }
 }
 
 function checkKey(e) { // function to add functionality to key presses
@@ -278,18 +298,7 @@ function checkKey(e) { // function to add functionality to key presses
   checkParentClass();// removes elements that contain parent class without having any children
   if (code === 13 && lastKey === 13) {
     try {
-      let parentEle = ele.parentElement;
-      while (parentEle.classList.contains('parent') === false) {
-        parentEle = parentEle.parentElement;
-      }
-      const { children } = parentEle;
-      for (let i = 0; i < children.length; i += 1) {
-        if (children[i].classList.contains('active')) {
-          children[i].classList.remove('active');
-        } else if (children[i].classList.contains('caret-down')) {
-          children[i].classList.remove('caret-down');
-        }
-      }
+      doubleEnterPress(ele);
       e.preventDefault();
     } catch (err) {
       console.log(`Error:${err}`);
@@ -303,34 +312,24 @@ function checkKey(e) { // function to add functionality to key presses
       if (ele.parentElement.tagName !== 'DIV') {
         e.preventDefault();
         ele = getParentLi(ele);
-        let parentEle = ele;
-        if (ele.parentElement.id !== 'textBody') {
-          parentEle = getParentUl(parentEle);
-        } else {
-          parentEle = ele.parentElement;
-        }
-        const pos = getPos(parentEle, ele);
-        ele.remove();
-        try{
-          setEndOfContenteditable(parentEle.children[pos - 1]);
-        }catch(err){
-          //ignore
-        }
+        deleteNode(ele);
       }
       checkChildren();
+      lastCount = undefined;
+    }else{
+      lastCount = ele.textContent.length;
     }
   } else {
     lastKey = code;
   }
-  lastCount = ele.textContent.length;
 
   const ctrlPressed = e.ctrlKey;
   if (ctrlPressed) {
-    ele.parentElement.focus();
-    if (code === 39) {
+    ele.parentElement.focus();//focus element available for moving
+    if (code === 39) {//CTRL RIGHTARROW creates new level
       newOutline();
       e.preventDefault();
-    } else if (code === 40 || code === 38) {
+    } else if (code === 40 || code === 38) {//CTRL UP/DOWN moves element
       if (ele.id !== 'textBody') {
         e.preventDefault();
         moveElement(code);
@@ -340,30 +339,15 @@ function checkKey(e) { // function to add functionality to key presses
 }
 
 
-let lastKeyUp;
+let ctrlWasPressed;//Update when after someone moves an element with CTRL UP/DOWN
 function checkCTRL(e){
-  if(e.ctrlKey === false && lastKeyUp === 17){
+  if(e.ctrlKey === false && ctrlWasPressed === true){
     forceRefresh();
     lastKeyUp = undefined;
+    ctrlWasPressed = false;
   }
   if(e.keyCode === 17){
-    lastKeyUp = 17;
-  }
-}
-
-let buffer = [];
-function refresh(e) {
-  //JSON object to send necessary information to other clients
-  const clientEdit = {
-    content: document.getElementById('textBody').innerHTML,
-    id: myid,
-    sync: undefined
-  };
-  buffer.push(e.keyCode);
-  if (e.keyCode === 32 || buffer.length >= 15) {
-    //sync clients on spacebar or buffer is greater than 15
-    ws.send(JSON.stringify(clientEdit));
-    buffer = [];
+    ctrlWasPressed = true;
   }
 }
 
@@ -417,6 +401,8 @@ function restoreSelection(containerEl, savedSel) {//restore clients cursor pos
   sel.addRange(range);
 }
 
+
+//WEBSOCKET FUNCTIONS
 function receivedMessageFromServer(e) {
   const clientEdit = JSON.parse(e.data);
   if(clientEdit.sync && clientEdit.id !== myid){//If new client, sync with other clients
@@ -431,6 +417,7 @@ function receivedMessageFromServer(e) {
     textBody.innerHTML = clientEdit.content;
     textBody.focus();
     restoreSelection(textBody, divSelection);
+    //reset event listeners
     const togglers = document.getElementsByClassName('caret');
     for (let i = 0; i < togglers.length; i += 1) {
       togglers[i].addEventListener('click', toggle);
@@ -438,6 +425,31 @@ function receivedMessageFromServer(e) {
     }
     setNew();
   }
+}
+
+let buffer = [];//Buffer to update other clients every 15 chars
+function refresh(e) {
+  //JSON object to send necessary information to other clients
+  const clientEdit = {
+    content: document.getElementById('textBody').innerHTML,
+    id: myid,
+    sync: undefined
+  };
+  buffer.push(e.keyCode);
+  if (e.keyCode === 32 || buffer.length >= 15) {
+    //sync clients on spacebar or buffer is greater than 15
+    ws.send(JSON.stringify(clientEdit));
+    buffer = [];
+  }
+}
+
+function forceRefresh() {//Force update on certain client interactions
+  const clientEdit = {
+    content: document.getElementById('textBody').innerHTML,
+    id: myid,
+    sync: undefined
+  };
+  ws.send(JSON.stringify(clientEdit));
 }
 
 function syncClients() {//Sync function for new client
@@ -455,9 +467,11 @@ function syncClients() {//Sync function for new client
 }
 
 let sync = setInterval(syncClients, 500);//Deleted after forcing sync to new client
+//END OF WEBSOCKET FUNCTIONS
 
+//Initialise
 window.onload = () => {
-  try {
+  try {//Connect to websocket
     ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}`);
     ws.addEventListener('message', receivedMessageFromServer);
   } catch (err) {
@@ -498,7 +512,7 @@ window.onload = () => {
     speechSynthesis.speak(message);
   }
   document.getElementById('textToSpeech').addEventListener('click', speak);
-  // Base event listeners
+  // Event listeners
   document.getElementById('textBody').addEventListener('keydown', checkKey);
   document.getElementById('textBody').addEventListener('keyup', refresh);
   document.getElementById('textBody').addEventListener('keyup', checkCTRL);
@@ -526,6 +540,7 @@ window.onload = () => {
     e.target.value = 1;
   });
   window.outlineButton.addEventListener('click', newOutline);
+  window.saveButton.addEventListener('click', save);
   window.clearButton.addEventListener('click', () => {
     if (window.confirm('Are you sure you want to clear the page?')) {
       console.log('document cleared');
