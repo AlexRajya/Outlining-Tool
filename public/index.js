@@ -253,7 +253,6 @@ function checkChildren() { // Removes "+/-" if element has no children
     if (nestedUls[i].children.length === 0) {
       try {
         parentLi = nestedUls[i].parentElement;
-        console.log(parentLi.querySelector('.caret'));
         parentLi.querySelector('.caret').classList.remove('caret-down');
         parentLi.querySelector('.caret').classList.remove('caret');
       } catch (err) {
@@ -410,7 +409,7 @@ function receivedMessageFromServer(e) {
   const clientEdit = JSON.parse(e.data);
   if (clientEdit.sync && clientEdit.id !== myid) { // If new client, sync with other clients
     forceRefresh();
-    console.log('Synced');
+    .log('Synced');
   } else if (clientEdit.sync === undefined) { // If not new client, update textBody
     const textBody = document.getElementById('textBody');
 
