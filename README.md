@@ -8,7 +8,7 @@ To run:
 
 # Features:
 1. Collabritive editing (Connect a second user to same address to see this working).
-2. Rich keyboard inputs: CTRL+RIGHTARROW creates new outline, CTRL+DOWNARROW moves element down, CTRL+UPARROW moves element up through levels and double enter press closes the tree currently in.
+2. Rich keyboard inputs: CTRL+RIGHTARROW creates new outline, CTRL+DOWNARROW moves element down, CTRL+UPARROW moves element up through levels(Ctrl+down ignores levels for faster traversals) and double enter press closes the tree currently in.
 3. Help button ("?" button on header) with text to speech of all feature for disability consideration (click speaker icon for TTS). 
 4. Printing on CTRL+P which maintains outline styling
 5. Rich text formatting on header.
