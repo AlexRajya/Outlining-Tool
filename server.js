@@ -50,5 +50,5 @@ app.post('/save', (req, res) => {
 
 // start the server
 server.listen(port, () => {
-  console.log('Server started:', `http://${ip.address()}:${port}`);
+  console.log('Server started on:', `http://${ip.address()}:${port}`, 'or: http://localhost:8080/');
 });
