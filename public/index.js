@@ -409,7 +409,7 @@ function receivedMessageFromServer(e) {
   const clientEdit = JSON.parse(e.data);
   if (clientEdit.sync && clientEdit.id !== myid) { // If new client, sync with other clients
     forceRefresh();
-    .log('Synced');
+    console.log('Synced');
   } else if (clientEdit.sync === undefined) { // If not new client, update textBody
     const textBody = document.getElementById('textBody');
 
