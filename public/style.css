@@ -170,6 +170,19 @@ html, body {
 		padding-right: 1cm;
 		padding-bottom: 1cm;
 	}
+  .content {
+    padding-top: 60%;
+  }
+  .buttonList {
+    float: left;
+    display:inline;
+  	height: auto;
+  }
+  .rightList {
+    float: none;
+    display: inline;
+  	height: auto;
+  }
 }
 
 @page {
