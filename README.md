@@ -25,6 +25,5 @@ To run:
 
 # Known bugs:
 1. Pressing CTRL+UP/DOWNARROW very quickly can result in cursor appearing at a different position. (Due to collabritive editing refresh) 
-2. Sometimes "+/-" button on lists is not removed when no children, this is due to empty elements still counting as children.
 
 
