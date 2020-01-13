@@ -410,7 +410,7 @@ function receivedMessageFromServer(e) {
   if (clientEdit.sync && clientEdit.id !== myid) { // If new client, sync with other clients
     forceRefresh();
     console.log('Synced');
-  } else if (clientEdit.sync === undefined) { // If not new client, update textBody
+  } else if (clientEdit.sync === undefined && clientEdit.id !== myid) { // If not new client, update textBody
     const textBody = document.getElementById('textBody');
 
     textBody.focus();
@@ -418,7 +418,10 @@ function receivedMessageFromServer(e) {
 
     textBody.innerHTML = clientEdit.content;
     textBody.focus();
-    restoreSelection(textBody, divSelection);
+    while(saveSelection(textBody).start !== divSelection.start){
+      restoreSelection(textBody, divSelection);
+    }
+
     // reset event listeners
     const togglers = document.getElementsByClassName('caret');
     for (let i = 0; i < togglers.length; i += 1) {
@@ -438,7 +441,7 @@ function refresh(e) {
     sync: undefined,
   };
   buffer.push(e.keyCode);
-  if (e.keyCode === 32 || buffer.length >= 15) {
+  if (e.keyCode === 32 || buffer.length >= 3) {
     // sync clients on spacebar or buffer is greater than 15
     ws.send(JSON.stringify(clientEdit));
     buffer = [];
