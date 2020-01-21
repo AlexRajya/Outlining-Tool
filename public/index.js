@@ -441,11 +441,8 @@ function refresh(e) {
     sync: undefined,
   };
   buffer.push(e.keyCode);
-  if (e.keyCode === 32 || buffer.length >= 3) {
-    // sync clients on spacebar or buffer is greater than 15
-    ws.send(JSON.stringify(clientEdit));
-    buffer = [];
-  }
+  ws.send(JSON.stringify(clientEdit));
+  buffer = [];
 }
 
 function forceRefresh() { // Force update on certain client interactions
