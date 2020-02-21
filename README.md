@@ -1,5 +1,5 @@
 # Outlining-Tool
-Application engineering coursework by UP847948
+text editor with built in outline editor and collabritive editing. 
 
 # Running Application
 To run:
