@@ -22,8 +22,3 @@ To run:
 4. Printing: Simply styled the page in CSS to just show the text area on print. 
 5. CTRL UP/DOWN: I first search for the LI element the text node is contained in, then i also search for the UL the LI element is contained in. I then loop through the children of the UL till i find the position of LI and then insert the Li element at pos-1. I also check if there is a tree element above and if there is and the nested list is active, append to the end of that instead. 
 
-
-# Known bugs:
-1. Pressing CTRL+UP/DOWNARROW very quickly can result in cursor appearing at a different position. (Due to collabritive editing refresh) 
-
-
