@@ -14,9 +14,9 @@
   "author": "Alex Rajya",
   "license": "UNLICENSED",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.20.1",
     "config": "^3.2.4",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "ip": "^1.1.5",
     "nodemon": "^2.0.1",
     "ws": "^7.2.0"
